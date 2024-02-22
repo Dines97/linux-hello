@@ -1,9 +1,12 @@
 #![allow(unused_imports, dead_code)]
 
-use std::pin::Pin;
+// pub mod [video_capture, mat, gui];
 
-use autocxx::prelude::*;
-use cxx::let_cxx_string;
+pub mod gui;
+pub mod mat;
+pub mod video_capture;
+
+use std::pin::Pin;
 
 autocxx::include_cpp! {
     #include "wrapper.hpp"
@@ -28,61 +31,16 @@ autocxx::include_cpp! {
     safety!(unsafe)
 }
 
-enum VideoCaptureAPIs {
-    CapAny = ffi::cv::VideoCaptureAPIs::CAP_ANY as isize,
-}
-
-struct VideoCapture {
-    inner: Pin<Box<ffi::cv::VideoCapture>>,
-}
-
-impl VideoCapture {
-    fn new(index: i32, api_preference: VideoCaptureAPIs) -> Self {
-        Self {
-            inner: ffi::cv::VideoCapture::new3(c_int(index), c_int(api_preference as i32))
-                .within_box(),
-        }
-    }
-}
-
-struct Mat {
-    inner: Pin<Box<ffi::cv::Mat>>,
-}
-
-impl Mat {
-    fn new() -> Self {
-        Self {
-            inner: ffi::cv::Mat::new().within_box(),
-        }
-    }
-}
-
-enum WindowFlags {
-    WindowAutosize = ffi::cv::WindowFlags::WINDOW_AUTOSIZE as isize,
-}
-
-fn named_window(winname: &str) {
-    let_cxx_string!(_winname = winname);
-    ffi::cv::namedWindow(&_winname, c_int(WindowFlags::WindowAutosize as i32));
-}
-
-fn imshow(winname: &str, mat: &mut Mat) {
-    let_cxx_string!(_winname = winname);
-    ffi::wrapper::imshow(&_winname, mat.inner.as_mut());
-}
-
-fn stream_extraction(video_capture: &mut VideoCapture, mat: &mut Mat) {
-    ffi::wrapper::streamExtraction(video_capture.inner.as_mut(), mat.inner.as_mut());
-}
-
-fn wait_key(delay: i32) {
-    ffi::cv::waitKey(c_int(delay));
-}
-
 #[cfg(test)]
 mod tests {
 
-    use super::*;
+    use crate::*;
+
+    use self::{
+        gui::{imshow, named_window, wait_key},
+        mat::Mat,
+        video_capture::{stream_extraction, VideoCapture, VideoCaptureAPIs},
+    };
 
     #[test]
     fn it_works() {
