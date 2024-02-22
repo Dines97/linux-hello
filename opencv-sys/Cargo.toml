@@ -1,0 +1,19 @@
+[package]
+name = "opencv-sys"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+build = "build.rs"
+links = "opencv4"
+
+[dependencies]
+cxx = "1.0.117"
+autocxx = "0.26.0"
+
+[build-dependencies]
+pkg-config = "0.3.30"
+
+autocxx-build = "0.26.0"
+miette = { version = "5", features = ["fancy"] } # optional but gives nicer error messages!

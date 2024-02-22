@@ -1,3 +1,7 @@
+[workspace]
+members = ["opencv-sys"]
+resolver = "2"
+
 [package]
 name = "linux-hello"
 version = "0.1.0"
