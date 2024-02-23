@@ -1,12 +1,4 @@
 [workspace]
-members = ["opencv-sys"]
+members = [ "linux-hello","opencv-sys"]
 resolver = "2"
 
-[package]
-name = "linux-hello"
-version = "0.1.0"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]

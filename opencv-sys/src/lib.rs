@@ -1,12 +1,6 @@
-#![allow(unused_imports, dead_code)]
-
-// pub mod [video_capture, mat, gui];
-
 pub mod gui;
 pub mod mat;
 pub mod video_capture;
-
-use std::pin::Pin;
 
 autocxx::include_cpp! {
     #include "wrapper.hpp"

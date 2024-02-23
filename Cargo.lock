@@ -471,6 +471,9 @@ dependencies = [
 [[package]]
 name = "linux-hello"
 version = "0.1.0"
+dependencies = [
+ "opencv-sys",
+]
 
 [[package]]
 name = "linux-raw-sys"
