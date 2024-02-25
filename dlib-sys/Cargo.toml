@@ -18,4 +18,4 @@ opencv-sys = {path = "../opencv-sys/"}
 pkg-config = "0.3.30"
 
 autocxx-build = "0.26.0"
-miette = { version = "5", features = ["fancy"] } # optional but gives nicer error messages!
+miette = { version = "7", features = ["fancy"] } # optional but gives nicer error messages!
