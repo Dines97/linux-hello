@@ -25,6 +25,14 @@ autocxx::include_cpp! {
     safety!(unsafe)
 }
 
+pub mod ffi_extern {
+
+    use crate::*;
+
+    // Required for dlib
+    pub use ffi::cv::Mat;
+}
+
 #[cfg(test)]
 mod tests {
 

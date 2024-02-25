@@ -1,7 +1,7 @@
 use autocxx::prelude::*;
 
 pub struct Mat {
-    pub(crate) inner: cxx::UniquePtr<crate::ffi::cv::Mat>,
+    pub inner: cxx::UniquePtr<crate::ffi::cv::Mat>,
 }
 
 impl Mat {

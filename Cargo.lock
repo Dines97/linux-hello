@@ -285,6 +285,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "dlib-sys"
+version = "0.1.0"
+dependencies = [
+ "autocxx",
+ "autocxx-build",
+ "cxx",
+ "miette",
+ "opencv-sys",
+ "pkg-config",
+]
+
+[[package]]
 name = "either"
 version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -472,6 +484,7 @@ dependencies = [
 name = "linux-hello"
 version = "0.1.0"
 dependencies = [
+ "dlib-sys",
  "opencv-sys",
 ]
 

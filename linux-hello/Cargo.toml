@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 opencv-sys = {path = "../opencv-sys/"}
+dlib-sys = {path = "../dlib-sys/"}

@@ -1,4 +1,4 @@
 [workspace]
-members = [ "linux-hello","opencv-sys"]
+members = [ "dlib-sys", "linux-hello","opencv-sys"]
 resolver = "2"
 
