@@ -1,6 +1,10 @@
 use autocxx::prelude::*;
 
-use crate::{matrix::Matrix, rectangle::Rectangles};
+use crate::{
+    cv_image::{self, CvImage},
+    matrix::Matrix,
+    rectangle::Rectangles,
+};
 
 pub struct ImageWindow {
     pub(crate) inner: cxx::UniquePtr<crate::ffi::wrapper::ImageWindow>,
@@ -13,8 +17,8 @@ impl ImageWindow {
         }
     }
 
-    pub fn set_image(&mut self, matrix: &mut Matrix) {
-        self.inner.pin_mut().setImage(matrix.inner.pin_mut())
+    pub fn set_image(&mut self, cv_image: &mut CvImage) {
+        self.inner.pin_mut().setImage(cv_image.inner.pin_mut())
     }
 
     pub fn add_overlays(&mut self, rectangles: &mut Rectangles) {

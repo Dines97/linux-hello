@@ -1,7 +1,7 @@
 use autocxx::prelude::*;
 use cxx::CxxVector;
 
-use crate::{matrix::Matrix, rectangle::Rectangles};
+use crate::{cv_image::CvImage, matrix::Matrix, rectangle::Rectangles};
 
 pub struct FrontalFaceDetector {
     pub(crate) inner: cxx::UniquePtr<crate::ffi::wrapper::FrontalFaceDetector>,
@@ -16,9 +16,9 @@ impl FrontalFaceDetector {
 
     /// Perform operator() call on c++ side hence this terrible name
     /// NOTE: Find a better name for this method
-    pub fn function_call(&mut self, matrix: &mut Matrix) -> Rectangles {
+    pub fn function_call(&mut self, cv_image: &mut CvImage) -> Rectangles {
         let cxx_rectangles: UniquePtr<CxxVector<crate::ffi::wrapper::Rectangle>> =
-            self.inner.pin_mut().functionCall(matrix.inner.pin_mut());
+            self.inner.pin_mut().functionCall(cv_image.inner.pin_mut());
 
         Rectangles {
             inner: cxx_rectangles,

@@ -10,6 +10,10 @@ fn main() -> miette::Result<()> {
     include_paths.append(&mut dlib.include_paths);
     libs.append(&mut dlib.libs);
 
+    let mut blas: pkg_config::Library = pkg_config::probe_library("blas").unwrap();
+    include_paths.append(&mut blas.include_paths);
+    libs.append(&mut blas.libs);
+
     let mut x11: pkg_config::Library = pkg_config::probe_library("x11").unwrap();
     include_paths.append(&mut x11.include_paths);
     libs.append(&mut x11.libs);

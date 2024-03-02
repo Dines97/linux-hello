@@ -12,11 +12,7 @@ impl Matrix {
         }
     }
 
-    pub fn from_opencv(mat: &mut Mat) -> Self {
-        let mut inner = crate::ffi::wrapper::Matrix::new().within_unique_ptr();
-
-        inner.pin_mut().fromOpenCV(mat.inner.pin_mut());
-
-        Self { inner }
+    pub fn assing_image(&mut self, mat: &mut Mat) {
+        self.inner.pin_mut().assignImage(mat.inner.pin_mut());
     }
 }

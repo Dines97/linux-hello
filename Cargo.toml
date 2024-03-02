@@ -2,3 +2,5 @@
 members = [ "dlib-sys", "linux-hello","opencv-sys"]
 resolver = "2"
 
+[profile.release]
+debug = true

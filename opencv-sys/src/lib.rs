@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 pub mod gui;
 pub mod mat;
 pub mod video_capture;

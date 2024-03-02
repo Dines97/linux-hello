@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <dlib/conditioning_class.h>
@@ -19,6 +18,9 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
 
+#include <dlib/dnn.h>
+#include <opencv2/core.hpp>
+
 namespace wrapper {
 
 struct FullObjectDetection {
@@ -37,10 +39,16 @@ struct Rectangle {
 struct Matrix {
   dlib::matrix<dlib::rgb_pixel> inner;
 
-  void fromOpenCV(cv::Mat &opencv_image) {
+  void assignImage(cv::Mat &opencv_image) {
     dlib::cv_image<dlib::bgr_pixel> CVImage(cvIplImage(opencv_image));
     assign_image(inner, CVImage);
   }
+};
+
+struct CvImage {
+  dlib::cv_image<dlib::bgr_pixel> inner;
+
+  CvImage(cv::Mat &mat) : inner(mat) {}
 };
 
 struct FrontalFaceDetector {
@@ -48,8 +56,8 @@ struct FrontalFaceDetector {
 
   FrontalFaceDetector() : inner(dlib::get_frontal_face_detector()) {}
 
-  std::vector<Rectangle> functionCall(Matrix &matrix) {
-    std::vector<dlib::rectangle> dlib_rectangles = inner(matrix.inner);
+  std::vector<Rectangle> functionCall(CvImage &cv_image) {
+    std::vector<dlib::rectangle> dlib_rectangles = inner(cv_image.inner);
 
     std::vector<Rectangle> rectangles;
     for (const auto &dlib_rectangle : dlib_rectangles) {
@@ -63,7 +71,7 @@ struct FrontalFaceDetector {
 struct ImageWindow {
   dlib::image_window inner;
 
-  void setImage(Matrix &matrix) { inner.set_image(matrix.inner); }
+  void setImage(CvImage &cv_image) { inner.set_image(cv_image.inner); }
 
   void addOverlay(Rectangle &rectangle) {
     this->inner.add_overlay(rectangle.inner);
@@ -81,5 +89,26 @@ struct ImageWindow {
 
   void clearOverlay() { this->inner.clear_overlay(); }
 };
+
+void capabilities() {
+
+#ifdef DLIB_USE_CUDA
+  std::cout << "Dlib is compiled with CUDA support." << std::endl;
+#else
+  std::cout << "Dlib is not compiled with CUDA support." << std::endl;
+#endif
+
+#ifdef DLIB_USE_BLAS
+  std::cout << "Dlib is compiled with BLAS support." << std::endl;
+#else
+  std::cout << "Dlib is not compiled with BLAS support." << std::endl;
+#endif
+
+#ifdef DLIB_USE_LAPACK
+  std::cout << "Dlib is compiled with LAPACK support." << std::endl;
+#else
+  std::cout << "Dlib is not compiled with LAPACK support." << std::endl;
+#endif
+}
 
 } // namespace wrapper

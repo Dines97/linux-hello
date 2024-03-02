@@ -1,9 +1,6 @@
-// dlib::cv_image<dlib::bgr_pixel> CVImage(cvIplImage(opencv_image));
-// assign_image(dlib_image, CVImage);
+#![allow(unused_imports)]
 
-// dlib::array2d<bgr_pixel> dlibFrame;
-// dlib::assign_image(dlibFrame, dlib::cv_image<bgr_pixel>(temp));
-
+pub mod cv_image;
 pub mod frontal_face_detector;
 pub mod image_window;
 pub mod matrix;
@@ -11,11 +8,15 @@ pub mod rectangle;
 
 autocxx::include_cpp! {
     #include "wrapper.hpp"
+    // #include "dlib/dnn.h"
 
     generate!("wrapper::FrontalFaceDetector")
     generate!("wrapper::Matrix")
+    generate!("wrapper::CvImage")
     generate!("wrapper::ImageWindow")
     generate!("wrapper::Rectangle")
+
+    // generate!("dlib::DLIB_USE_CUDA")
 
 
 
