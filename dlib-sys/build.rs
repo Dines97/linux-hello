@@ -24,7 +24,7 @@ fn main() -> miette::Result<()> {
     libs.iter()
         .for_each(|x: &String| println!("cargo:rustc-link-lib={}", x));
 
-    println!("cargo:rerun-if-changed=src/main.rs");
+    println!("cargo:rerun-if-changed=src/lib.rs");
 
     Ok(())
 }

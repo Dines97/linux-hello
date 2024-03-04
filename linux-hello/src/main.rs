@@ -1,48 +1,19 @@
-use core::fmt;
-use std::time::{Duration, Instant};
+mod cycle_controller;
 
+use cycle_controller::CycleController;
 use dlib_sys::{
     cv_image::CvImage, frontal_face_detector::FrontalFaceDetector, image_window::ImageWindow,
     rectangle::Rectangles,
 };
 use opencv_sys::{
     mat::Mat,
-    video_capture::{stream_extraction, VideoCapture, VideoCaptureAPIs},
+    video_capture::{VideoCapture, VideoCaptureAPIs},
 };
 
-struct CycleController {
-    cps: i32,
-    instant: Instant,
-    // previous: Instant
-    duration: Duration,
-}
+fn main() {
+    opencv_sys::set_num_threads(1);
 
-impl CycleController {
-    pub fn new(cps: i32) -> Self {
-        Self {
-            cps,
-            instant: Instant::now(),
-            duration: Duration::ZERO, // previous: Instant::now()
-        }
-    }
-
-    pub fn update(&mut self) {
-        self.duration = self.instant.elapsed();
-
-        self.instant = Instant::now();
-    }
-}
-
-impl fmt::Display for CycleController {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let cps: f64 = 1_f64 / f64::max(self.duration.as_secs_f64(), f64::MIN_POSITIVE);
-
-        write!(f, "CPS: {}", cps)
-    }
-}
-
-fn main() -> ! {
-    let mut video_capture: VideoCapture = VideoCapture::new(2, VideoCaptureAPIs::CapAny);
+    let mut video_capture: VideoCapture = VideoCapture::new(0, VideoCaptureAPIs::CapAny);
 
     let mut mat: Mat = Mat::new();
 
@@ -50,13 +21,10 @@ fn main() -> ! {
 
     let mut frontal_face_detector: FrontalFaceDetector = FrontalFaceDetector::new();
 
-    let mut cycle_controller: CycleController = CycleController::new(30);
+    let mut cycle_controller: CycleController = CycleController::new();
 
     loop {
-        stream_extraction(&mut video_capture, &mut mat);
-
-        cycle_controller.update();
-        println!("{}", cycle_controller);
+        video_capture.stream_extraction(&mut mat);
 
         let mut cv_image: CvImage = CvImage::new(&mut mat);
 
@@ -66,6 +34,10 @@ fn main() -> ! {
         image_window.clear_overlay();
         image_window.set_image(&mut cv_image);
         image_window.add_overlays(&mut rectangles);
+
+        cycle_controller.throttle(10.0);
+        println!("{}", cycle_controller);
+        cycle_controller.update();
     }
 }
 

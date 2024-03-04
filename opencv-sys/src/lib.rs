@@ -1,5 +1,7 @@
 #![allow(unused_imports)]
 
+use autocxx::prelude::*;
+
 pub mod gui;
 pub mod mat;
 pub mod video_capture;
@@ -14,6 +16,7 @@ autocxx::include_cpp! {
     generate!("cv::WindowFlags")
     generate!("wrapper::imshow")
     generate!("cv::waitKey")
+    generate!("cv::setNumThreads")
 
     generate!("cv::VideoCapture")
     generate!("cv::VideoCaptureAPIs")
@@ -25,6 +28,10 @@ autocxx::include_cpp! {
     block!("cv::InputArray")
 
     safety!(unsafe)
+}
+
+pub fn set_num_threads(nthreads: i32) {
+    ffi::cv::setNumThreads(c_int(nthreads));
 }
 
 pub mod ffi_extern {
@@ -43,7 +50,7 @@ mod tests {
     use self::{
         gui::{imshow, named_window, wait_key},
         mat::Mat,
-        video_capture::{stream_extraction, VideoCapture, VideoCaptureAPIs},
+        video_capture::{VideoCapture, VideoCaptureAPIs},
     };
 
     #[test]
@@ -54,10 +61,8 @@ mod tests {
 
         named_window("hello");
 
-        loop {
-            stream_extraction(&mut video_capture, &mut mat);
-            imshow("hello", &mut mat);
-            wait_key(50);
-        }
+        video_capture.stream_extraction(&mut mat);
+        imshow("hello", &mut mat);
+        wait_key(50);
     }
 }

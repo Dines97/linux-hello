@@ -38,11 +38,6 @@ struct Rectangle {
 
 struct Matrix {
   dlib::matrix<dlib::rgb_pixel> inner;
-
-  void assignImage(cv::Mat &opencv_image) {
-    dlib::cv_image<dlib::bgr_pixel> CVImage(cvIplImage(opencv_image));
-    assign_image(inner, CVImage);
-  }
 };
 
 struct CvImage {

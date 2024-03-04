@@ -17,8 +17,7 @@ impl VideoCapture {
                 .within_unique_ptr(),
         }
     }
-}
-
-pub fn stream_extraction(video_capture: &mut VideoCapture, mat: &mut Mat) {
-    crate::ffi::wrapper::streamExtraction(video_capture.inner.pin_mut(), mat.inner.pin_mut());
+    pub fn stream_extraction(&mut self, mat: &mut Mat) {
+        crate::ffi::wrapper::streamExtraction(self.inner.pin_mut(), mat.inner.pin_mut());
+    }
 }
