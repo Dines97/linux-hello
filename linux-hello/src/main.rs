@@ -5,15 +5,23 @@ use dlib_sys::{
     cv_image::CvImage, frontal_face_detector::FrontalFaceDetector, image_window::ImageWindow,
     rectangle::Rectangles,
 };
+use env_logger::{Builder, Target};
 use opencv_sys::{
     mat::Mat,
     video_capture::{VideoCapture, VideoCaptureAPIs},
 };
 
 fn main() {
+    Builder::from_default_env()
+        .target(Target::Stdout)
+        .filter_level(log::LevelFilter::Trace)
+        .init();
+
     opencv_sys::set_num_threads(1);
 
     let mut video_capture: VideoCapture = VideoCapture::new(0, VideoCaptureAPIs::CapAny);
+
+    log::info!("OpenCV backend name: {}", video_capture.get_backend_name());
 
     let mut mat: Mat = Mat::new();
 
@@ -36,7 +44,7 @@ fn main() {
         image_window.add_overlays(&mut rectangles);
 
         cycle_controller.throttle(10.0);
-        println!("{}", cycle_controller);
+        log::trace!("{}", cycle_controller);
         cycle_controller.update();
     }
 }
