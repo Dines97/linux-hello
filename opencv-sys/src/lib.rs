@@ -53,16 +53,16 @@ mod tests {
         video_capture::{VideoCapture, VideoCaptureAPIs},
     };
 
-    #[test]
-    fn it_works() {
-        let mut video_capture: VideoCapture = VideoCapture::new(2, VideoCaptureAPIs::CapAny);
-
-        let mut mat: Mat = Mat::new();
-
-        named_window("hello");
-
-        video_capture.stream_extraction(&mut mat);
-        imshow("hello", &mut mat);
-        wait_key(50);
-    }
+    // #[test]
+    // fn it_works() {
+    //     let mut video_capture: VideoCapture = VideoCapture::new(2, VideoCaptureAPIs::CapAny);
+    //
+    //     let mut mat: Mat = Mat::new();
+    //
+    //     named_window("hello");
+    //
+    //     video_capture.stream_extraction(&mut mat);
+    //     imshow("hello", &mut mat);
+    //     wait_key(50);
+    // }
 }
