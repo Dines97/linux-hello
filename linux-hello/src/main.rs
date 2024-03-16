@@ -3,7 +3,6 @@ mod cycle_controller;
 use cycle_controller::CycleController;
 use dlib_sys::{
     cv_image::CvImage, frontal_face_detector::FrontalFaceDetector, image_window::ImageWindow,
-    rectangle::Rectangles,
 };
 use env_logger::{Builder, Target};
 use opencv_sys::{
@@ -37,11 +36,11 @@ fn main() {
         let mut cv_image: CvImage = CvImage::new(&mut mat);
 
         // std::thread::sleep(time::Duration::from_secs_f64(0.2));
-        let mut rectangles: Rectangles = frontal_face_detector.function_call(&mut cv_image);
+        let rectangles = frontal_face_detector.function_call(&mut cv_image);
 
         image_window.clear_overlay();
         image_window.set_image(&mut cv_image);
-        image_window.add_overlays(&mut rectangles);
+        image_window.add_overlays(rectangles);
 
         cycle_controller.throttle(10.0);
         log::trace!("{}", cycle_controller);

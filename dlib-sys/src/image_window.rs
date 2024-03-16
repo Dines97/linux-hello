@@ -1,9 +1,9 @@
 use autocxx::prelude::*;
+use cxx::CxxVector;
 
 use crate::{
     cv_image::{self, CvImage},
     matrix::Matrix,
-    rectangle::Rectangles,
 };
 
 pub struct ImageWindow {
@@ -21,8 +21,11 @@ impl ImageWindow {
         self.inner.pin_mut().setImage(cv_image.inner.pin_mut())
     }
 
-    pub fn add_overlays(&mut self, rectangles: &mut Rectangles) {
-        self.inner.pin_mut().addOverlay1(rectangles.inner.pin_mut());
+    pub fn add_overlays(
+        &mut self,
+        rectangles: UniquePtr<CxxVector<crate::ffi::wrapper::Rectangle>>,
+    ) {
+        self.inner.pin_mut().addOverlay1(rectangles);
     }
 
     pub fn clear_overlay(&mut self) {

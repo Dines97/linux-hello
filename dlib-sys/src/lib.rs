@@ -4,17 +4,26 @@ pub mod cv_image;
 pub mod frontal_face_detector;
 pub mod image_window;
 pub mod matrix;
-pub mod rectangle;
 
 autocxx::include_cpp! {
-    #include "wrapper.hpp"
+    #include "wrapper/cv_image.cpp"
+    #include "wrapper/frontal_face_detector.cpp"
+    #include "wrapper/image_window.cpp"
+    #include "wrapper/matrix.cpp"
+    #include "wrapper/rectangle.cpp"
+
+    generate!("wrapper::CvImage")
+    generate!("wrapper::FrontalFaceDetector")
+    generate!("wrapper::ImageWindow")
+    generate!("wrapper::Matrix")
+    generate!("wrapper::Rectangle")
+
+    // #include "dlib/geometry/rectangle.h"
     // #include "dlib/dnn.h"
 
-    generate!("wrapper::FrontalFaceDetector")
-    generate!("wrapper::Matrix")
-    generate!("wrapper::CvImage")
-    generate!("wrapper::ImageWindow")
-    generate!("wrapper::Rectangle")
+    // generate!("dlib::rectangle")
+
+    // generate!("wrapper::Matrix")
 
     // generate!("dlib::DLIB_USE_CUDA")
 
