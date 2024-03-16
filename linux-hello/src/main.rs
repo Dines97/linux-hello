@@ -35,7 +35,6 @@ fn main() {
 
         let mut cv_image: CvImage = CvImage::new(&mut mat);
 
-        // std::thread::sleep(time::Duration::from_secs_f64(0.2));
         let rectangles = frontal_face_detector.function_call(&mut cv_image);
 
         image_window.clear_overlay();
