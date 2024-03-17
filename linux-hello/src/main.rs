@@ -3,6 +3,7 @@ mod cycle_controller;
 use cycle_controller::CycleController;
 use dlib_sys::{
     cv_image::CvImage, frontal_face_detector::FrontalFaceDetector, image_window::ImageWindow,
+    shape_predictor::ShapePredictor,
 };
 use env_logger::{Builder, Target};
 use opencv_sys::{
@@ -30,6 +31,8 @@ fn main() {
 
     let mut cycle_controller: CycleController = CycleController::new();
 
+    let mut shape_predictor: ShapePredictor = ShapePredictor::new();
+
     loop {
         video_capture.stream_extraction(&mut mat);
 
@@ -37,9 +40,13 @@ fn main() {
 
         let rectangles = frontal_face_detector.function_call(&mut cv_image);
 
+        let faces = shape_predictor.function_call(&mut cv_image, rectangles);
+
+        let overlays = dlib_sys::render_face_detections(faces);
+
         image_window.clear_overlay();
         image_window.set_image(&mut cv_image);
-        image_window.add_overlays(rectangles);
+        image_window.add_line_overlays(overlays);
 
         cycle_controller.throttle(10.0);
         log::trace!("{}", cycle_controller);

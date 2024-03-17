@@ -21,11 +21,18 @@ impl ImageWindow {
         self.inner.pin_mut().setImage(cv_image.inner.pin_mut())
     }
 
-    pub fn add_overlays(
+    pub fn add_rectangle_overlays(
         &mut self,
         rectangles: UniquePtr<CxxVector<crate::ffi::wrapper::Rectangle>>,
     ) {
         self.inner.pin_mut().addOverlay1(rectangles);
+    }
+
+    pub fn add_line_overlays(
+        &mut self,
+        overlay_lines: UniquePtr<CxxVector<crate::ffi::wrapper::OverlayLine>>,
+    ) {
+        self.inner.pin_mut().addOverlay2(overlay_lines);
     }
 
     pub fn clear_overlay(&mut self) {
