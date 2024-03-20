@@ -1,7 +1,10 @@
 use autocxx::prelude::*;
 use cxx::CxxVector;
 
-use crate::{cv_image::CvImage, matrix::Matrix};
+use crate::{
+    cv_image::CvImage, full_object_detection::FullObjectDetection, matrix::Matrix,
+    rectangle::Rectangle,
+};
 
 pub struct ShapePredictor {
     pub(crate) inner: cxx::UniquePtr<crate::ffi::wrapper::ShapePredictor>,
@@ -17,12 +20,15 @@ impl ShapePredictor {
     /// Perform operator() call on c++ side hence this terrible name
     /// NOTE: Find a better name for this method
     pub fn function_call(
-        &mut self,
+        &self,
         cv_image: &mut CvImage,
-        rectangles: UniquePtr<CxxVector<crate::ffi::wrapper::Rectangle>>,
-    ) -> UniquePtr<CxxVector<crate::ffi::wrapper::FullObjectDetection>> {
-        self.inner
-            .pin_mut()
-            .functionCall(cv_image.inner.pin_mut(), rectangles)
+        rectangle: Rectangle,
+    ) -> FullObjectDetection {
+        FullObjectDetection {
+            inner: self
+                .inner
+                .function_call(cv_image.inner.pin_mut(), rectangle.inner)
+                .within_unique_ptr(),
+        }
     }
 }

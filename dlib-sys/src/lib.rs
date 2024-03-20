@@ -1,11 +1,16 @@
 #![allow(unused_imports)]
 
 use cxx::{CxxVector, UniquePtr};
+use full_object_detection::FullObjectDetection;
+use overlay_line::OverlayLine;
 
 pub mod cv_image;
 pub mod frontal_face_detector;
+pub mod full_object_detection;
 pub mod image_window;
 pub mod matrix;
+pub mod overlay_line;
+pub mod rectangle;
 pub mod shape_predictor;
 
 autocxx::include_cpp! {
@@ -18,13 +23,14 @@ autocxx::include_cpp! {
     #include "wrapper/rectangle.cpp"
     #include "wrapper/shape_predictor.cpp"
 
-    generate!("wrapper::renderFaceDetections")
+    generate!("wrapper::render_face_detections")
     generate!("wrapper::CvImage")
     generate!("wrapper::FrontalFaceDetector")
     generate!("wrapper::ImageWindow")
     generate!("wrapper::Matrix")
     generate!("wrapper::OverlayLine")
     generate!("wrapper::Rectangle")
+    generate!("wrapper::RectanglesWrapper")
     generate!("wrapper::ShapePredictor")
 
     extern_cpp_type!("cv::Mat", opencv_sys::ffi_extern::Mat)
@@ -33,9 +39,12 @@ autocxx::include_cpp! {
 }
 
 pub fn render_face_detections(
-    full_object_detections: UniquePtr<CxxVector<crate::ffi::wrapper::FullObjectDetection>>,
+    full_object_detection: &mut FullObjectDetection,
 ) -> UniquePtr<CxxVector<crate::ffi::wrapper::OverlayLine>> {
-    crate::ffi::wrapper::renderFaceDetections(full_object_detections)
+    crate::ffi::wrapper::render_face_detections(full_object_detection.inner.pin_mut())
+    // OverlayLine {
+    //     inner: crate::ffi::wrapper::render_face_detections(full_object_detection.inner.pin_mut()),
+    // }
 }
 
 #[cfg(test)]

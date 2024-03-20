@@ -1,6 +1,7 @@
 mod cycle_controller;
 
 use cycle_controller::CycleController;
+use dlib::face_recognition::FaceRecognition;
 use dlib_sys::{
     cv_image::CvImage, frontal_face_detector::FrontalFaceDetector, image_window::ImageWindow,
     shape_predictor::ShapePredictor,
@@ -27,26 +28,24 @@ fn main() {
 
     let mut image_window: ImageWindow = ImageWindow::new();
 
-    let mut frontal_face_detector: FrontalFaceDetector = FrontalFaceDetector::new();
-
     let mut cycle_controller: CycleController = CycleController::new();
 
-    let mut shape_predictor: ShapePredictor = ShapePredictor::new();
+    let face_recognition: FaceRecognition = FaceRecognition::new();
 
     loop {
         video_capture.stream_extraction(&mut mat);
 
         let mut cv_image: CvImage = CvImage::new(&mut mat);
 
-        let rectangles = frontal_face_detector.function_call(&mut cv_image);
-
-        let faces = shape_predictor.function_call(&mut cv_image, rectangles);
-
-        let overlays = dlib_sys::render_face_detections(faces);
+        let mut faces = face_recognition.get_faces(&mut cv_image);
 
         image_window.clear_overlay();
+        faces.iter_mut().for_each(|x| {
+            image_window.add_rectangle_overlay(x.rectangle.clone());
+            let overlays = dlib_sys::render_face_detections(&mut x.full_object_detection);
+            image_window.add_line_overlay(overlays);
+        });
         image_window.set_image(&mut cv_image);
-        image_window.add_line_overlays(overlays);
 
         cycle_controller.throttle(10.0);
         log::trace!("{}", cycle_controller);

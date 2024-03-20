@@ -1,5 +1,5 @@
 [workspace]
-members = [ "dlib-sys", "linux-hello","opencv-sys"]
+members = [ "dlib", "dlib-sys", "linux-hello","opencv-sys"]
 resolver = "2"
 
 [profile.release]

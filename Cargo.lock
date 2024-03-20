@@ -339,6 +339,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "dlib"
+version = "0.1.0"
+dependencies = [
+ "dlib-sys",
+]
+
+[[package]]
 name = "dlib-sys"
 version = "0.1.0"
 dependencies = [
@@ -561,6 +568,7 @@ dependencies = [
 name = "linux-hello"
 version = "0.1.0"
 dependencies = [
+ "dlib",
  "dlib-sys",
  "env_logger 0.11.3",
  "log",

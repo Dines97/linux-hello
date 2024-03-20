@@ -12,16 +12,9 @@
 
 namespace wrapper {
 std::vector<OverlayLine>
-renderFaceDetections(std::vector<FullObjectDetection> full_object_detections) {
-
-  std::vector<dlib::full_object_detection> dlib_full_object_detections;
-
-  std::transform(full_object_detections.begin(), full_object_detections.end(),
-                 std::back_inserter(dlib_full_object_detections),
-                 [](FullObjectDetection x) { return x.inner; });
-
+render_face_detections(FullObjectDetection &full_object_detections) {
   std::vector<dlib::image_window::overlay_line> dlib_overlay_lines =
-      dlib::render_face_detections(dlib_full_object_detections);
+      dlib::render_face_detections(full_object_detections.inner);
 
   std::vector<OverlayLine> overlay_lines;
 

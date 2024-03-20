@@ -7,7 +7,7 @@ pub mod mat;
 pub mod video_capture;
 
 autocxx::include_cpp! {
-    #include "wrapper.hpp"
+    #include "wrapper/core.cpp"
     #include "opencv2/highgui.hpp"
     #include "opencv2/videoio.hpp"
     #include "opencv2/core/mat.hpp"
