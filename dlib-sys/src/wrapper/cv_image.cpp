@@ -9,6 +9,6 @@ namespace wrapper {
 struct CvImage {
   dlib::cv_image<dlib::bgr_pixel> inner;
 
-  CvImage(cv::Mat &mat) : inner(mat) {}
+  CvImage(const cv::Mat &mat) : inner(mat) {}
 };
 } // namespace wrapper

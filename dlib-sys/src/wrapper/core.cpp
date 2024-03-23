@@ -12,7 +12,7 @@
 
 namespace wrapper {
 std::vector<OverlayLine>
-render_face_detections(FullObjectDetection &full_object_detections) {
+render_face_detections(const FullObjectDetection &full_object_detections) {
   std::vector<dlib::image_window::overlay_line> dlib_overlay_lines =
       dlib::render_face_detections(full_object_detections.inner);
 

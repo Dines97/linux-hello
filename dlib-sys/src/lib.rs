@@ -23,29 +23,24 @@ autocxx::include_cpp! {
     #include "wrapper/rectangle.cpp"
     #include "wrapper/shape_predictor.cpp"
 
-    generate!("wrapper::render_face_detections")
-    generate!("wrapper::CvImage")
     generate!("wrapper::FrontalFaceDetector")
+    generate_pod!("wrapper::Rectangle")
+
+    generate!("wrapper::ShapePredictor")
+    generate!("wrapper::FullObjectDetection")
+
+    generate!("wrapper::render_face_detections")
+    generate!("wrapper::OverlayLine")
+
+    generate!("wrapper::CvImage")
     generate!("wrapper::ImageWindow")
     generate!("wrapper::Matrix")
-    generate!("wrapper::OverlayLine")
-    generate!("wrapper::Rectangle")
-    generate!("wrapper::RectanglesWrapper")
-    generate!("wrapper::ShapePredictor")
 
     extern_cpp_type!("cv::Mat", opencv_sys::ffi_extern::Mat)
 
     safety!(unsafe)
 }
 
-pub fn render_face_detections(
-    full_object_detection: &mut FullObjectDetection,
-) -> UniquePtr<CxxVector<crate::ffi::wrapper::OverlayLine>> {
-    crate::ffi::wrapper::render_face_detections(full_object_detection.inner.pin_mut())
-    // OverlayLine {
-    //     inner: crate::ffi::wrapper::render_face_detections(full_object_detection.inner.pin_mut()),
-    // }
-}
 
 #[cfg(test)]
 mod tests {

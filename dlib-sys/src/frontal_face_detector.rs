@@ -1,3 +1,5 @@
+use std::pin::Pin;
+
 use autocxx::prelude::*;
 use cxx::CxxVector;
 
@@ -16,23 +18,18 @@ impl FrontalFaceDetector {
 
     /// Perform operator() call on c++ side hence this terrible name
     /// NOTE: Find a better name for this method
-    pub fn function_call(&self, cv_image: &mut CvImage) -> Vec<Rectangle> {
+    pub fn function_call(&self, cv_image: &CvImage) -> Vec<Rectangle> {
         // let mut cxx_rectangles: UniquePtr<CxxVector<crate::ffi::wrapper::Rectangle>> =
         //     self.inner.function_call(cv_image.inner.pin_mut());
 
-        let mut rectangles: UniquePtr<crate::ffi::wrapper::RectanglesWrapper> = self
-            .inner
-            .function_call(cv_image.inner.pin_mut())
-            .within_unique_ptr();
+        let rectangles: UniquePtr<CxxVector<crate::ffi::wrapper::Rectangle>> =
+            self.inner.function_call(cv_image.inner.as_ref().unwrap());
 
-        let mut a: Vec<Rectangle> = vec![];
-
-        for _ in 0..rectangles.size() {
-            a.push(Rectangle {
-                inner: rectangles.pin_mut().pop(),
-            });
-        }
-
-        return a;
+        return rectangles
+            .as_ref()
+            .unwrap()
+            .iter()
+            .map(|x: &crate::ffi::wrapper::Rectangle| Rectangle { inner: x.clone() })
+            .collect::<Vec<_>>();
     }
 }

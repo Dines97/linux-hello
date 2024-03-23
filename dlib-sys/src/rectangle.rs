@@ -1,7 +1,14 @@
 use autocxx::as_copy;
 use cxx::{SharedPtr, UniquePtr};
 
-#[derive(Clone)]
 pub struct Rectangle {
-    pub(crate) inner: SharedPtr<crate::ffi::wrapper::Rectangle>,
+    pub(crate) inner: crate::ffi::wrapper::Rectangle,
+}
+
+impl Clone for Rectangle {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+        }
+    }
 }

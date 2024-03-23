@@ -18,7 +18,7 @@ impl VideoCapture {
         }
     }
     pub fn stream_extraction(&mut self, mat: &mut Mat) {
-        crate::ffi::wrapper::streamExtraction(self.inner.pin_mut(), mat.inner.pin_mut());
+        crate::ffi::wrapper::stream_extraction(self.inner.pin_mut(), mat.inner.pin_mut());
     }
 
     pub fn get_backend_name(&self) -> String {

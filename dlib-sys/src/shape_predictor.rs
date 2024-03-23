@@ -21,13 +21,13 @@ impl ShapePredictor {
     /// NOTE: Find a better name for this method
     pub fn function_call(
         &self,
-        cv_image: &mut CvImage,
+        cv_image: &CvImage,
         rectangle: Rectangle,
     ) -> FullObjectDetection {
         FullObjectDetection {
             inner: self
                 .inner
-                .function_call(cv_image.inner.pin_mut(), rectangle.inner)
+                .function_call(cv_image.inner.as_ref().unwrap(), rectangle.inner)
                 .within_unique_ptr(),
         }
     }

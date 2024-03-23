@@ -22,7 +22,7 @@ autocxx::include_cpp! {
     generate!("cv::VideoCaptureAPIs")
 
     generate!("cv::Mat")
-    generate!("wrapper::streamExtraction")
+    generate!("wrapper::stream_extraction")
 
     block!("cv::OutputArray")
     block!("cv::InputArray")

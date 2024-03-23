@@ -6,9 +6,9 @@ pub struct CvImage {
 }
 
 impl CvImage {
-    pub fn new(mat: &mut Mat) -> Self {
+    pub fn new(mat: &Mat) -> Self {
         Self {
-            inner: crate::ffi::wrapper::CvImage::new(mat.inner.pin_mut()).within_unique_ptr(),
+            inner: crate::ffi::wrapper::CvImage::new(mat.inner.as_ref().unwrap()).within_unique_ptr(),
         }
     }
 }

@@ -16,10 +16,10 @@ namespace wrapper {
 struct ImageWindow {
   dlib::image_window inner;
 
-  void set_image(CvImage &cv_image) { inner.set_image(cv_image.inner); }
+  void set_image(const CvImage &cv_image) { inner.set_image(cv_image.inner); }
 
-  void add_rectangle_overlay(std::shared_ptr<Rectangle> rectangle) {
-    this->inner.add_overlay(rectangle.get()->inner);
+  void add_rectangle_overlay(Rectangle rectangle) {
+    this->inner.add_overlay(rectangle.inner);
   }
 
   void add_line_overlay(std::vector<OverlayLine> overlay_lines) {
