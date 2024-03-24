@@ -19,11 +19,7 @@ impl ShapePredictor {
 
     /// Perform operator() call on c++ side hence this terrible name
     /// NOTE: Find a better name for this method
-    pub fn function_call(
-        &self,
-        cv_image: &CvImage,
-        rectangle: Rectangle,
-    ) -> FullObjectDetection {
+    pub fn function_call(&self, cv_image: &CvImage, rectangle: Rectangle) -> FullObjectDetection {
         FullObjectDetection {
             inner: self
                 .inner

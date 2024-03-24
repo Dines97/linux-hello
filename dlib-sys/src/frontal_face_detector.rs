@@ -33,3 +33,9 @@ impl FrontalFaceDetector {
             .collect::<Vec<_>>();
     }
 }
+
+impl Default for FrontalFaceDetector {
+    fn default() -> Self {
+        Self::new()
+    }
+}

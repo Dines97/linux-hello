@@ -7,6 +7,6 @@ namespace wrapper {
 struct MatrixDescriptor {
   dlib::matrix<float, 0, 1> inner;
 
-  MatrixDescriptor(dlib::matrix<float, 0, 1> &matrix) : inner(matrix) {}
+  MatrixDescriptor(const dlib::matrix<float, 0, 1> &matrix) : inner(matrix) {}
 };
 } // namespace wrapper

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "cv_image.cpp"
+#include "matrix.cpp"
 #include "overlay_line.cpp"
 #include "rectangle.cpp"
 
@@ -16,7 +17,11 @@ namespace wrapper {
 struct ImageWindow {
   dlib::image_window inner;
 
-  void set_image(const CvImage &cv_image) { inner.set_image(cv_image.inner); }
+  void set_matrix(const Matrix &matrix) { inner.set_image(matrix.inner); }
+
+  void set_cv_image(const CvImage &cv_image) {
+    inner.set_image(cv_image.inner);
+  }
 
   void add_rectangle_overlay(Rectangle rectangle) {
     this->inner.add_overlay(rectangle.inner);

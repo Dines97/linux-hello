@@ -19,8 +19,16 @@ impl ImageWindow {
         }
     }
 
-    pub fn set_image(&mut self, cv_image: &CvImage) {
-        self.inner.pin_mut().set_image(cv_image.inner.as_ref().unwrap())
+    pub fn set_matrix(&mut self, matrix: &Matrix) {
+        self.inner
+            .pin_mut()
+            .set_matrix(matrix.inner.as_ref().unwrap())
+    }
+
+    pub fn set_cv_image(&mut self, cv_image: &CvImage) {
+        self.inner
+            .pin_mut()
+            .set_cv_image(cv_image.inner.as_ref().unwrap())
     }
 
     pub fn add_rectangle_overlay(&mut self, rectangle: Rectangle) {

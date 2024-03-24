@@ -24,6 +24,7 @@ fn main() {
     let mut mat: Mat = Mat::new();
 
     let mut image_window: ImageWindow = ImageWindow::new();
+    let mut face_image_window: ImageWindow = ImageWindow::new();
 
     let mut cycle_controller: CycleController = CycleController::new();
 
@@ -41,8 +42,9 @@ fn main() {
             image_window.add_rectangle_overlay(x.rectangle.clone());
             let overlays = x.full_object_detection.render_face_detections();
             image_window.add_line_overlay(overlays);
+            face_image_window.set_matrix(&x.face_chip);
         });
-        image_window.set_image(&cv_image);
+        image_window.set_cv_image(&cv_image);
 
         cycle_controller.throttle(10.0);
         log::trace!("{}", cycle_controller);

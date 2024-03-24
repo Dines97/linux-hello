@@ -4,13 +4,14 @@
 #include <dlib/dnn.h>
 #include <dlib/gui_widgets.h>
 #include <dlib/image_io.h>
+#include <dlib/image_processing.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/string.h>
 
-#include "full_object_detection.cpp"
 #include "matrix.cpp"
 #include "matrix_descriptor.cpp"
 #include "rectangle.cpp"
+#include "rust/cxx.h"
 
 namespace dlib_ext {
 using namespace dlib;
@@ -51,12 +52,42 @@ using anet_type = loss_metric<fc_no_bias<
 
 namespace wrapper {
 
-struct FaceRecognition {
+struct FaceRecognitionResnetModelV1 {
   dlib_ext::anet_type inner;
 
-  FaceRecognition() {
+  FaceRecognitionResnetModelV1() {
     dlib::deserialize("dlib_face_recognition_resnet_model_v1.dat") >> inner;
   }
-};
 
+  MatrixDescriptor function_call(const Matrix &matrix) const {
+
+    std::vector<dlib::matrix<dlib::rgb_pixel>> dlib_matricies = {matrix.inner};
+
+    // std::cout << "resnet working?" << std::endl;
+
+    std::vector<dlib::matrix<float, 0, 1>> dlib_face_descriptors =
+        const_cast<dlib_ext::anet_type &>(inner)(dlib_matricies);
+
+    return MatrixDescriptor(dlib_face_descriptors.front());
+  }
+
+  // std::vector<MatrixDescriptor>
+  // function_call(rust::Vec<Matrix> matricies) const {
+  //   std::vector<dlib::matrix<dlib::rgb_pixel>> dlib_matricies;
+  //   std::transform(matricies.begin(), matricies.end(),
+  //                  std::back_inserter(dlib_matricies),
+  //                  [](Matrix x) { return x.inner; });
+  //
+  //   std::vector<dlib::matrix<float, 0, 1>> dlib_face_descriptors =
+  //       const_cast<dlib_ext::anet_type &>(inner)(dlib_matricies);
+  //
+  //   std::vector<MatrixDescriptor> face_descriptors;
+  //   std::transform(
+  //       dlib_face_descriptors.begin(), dlib_face_descriptors.end(),
+  //       std::back_inserter(face_descriptors),
+  //       [](dlib::matrix<float, 0, 1> x) { return MatrixDescriptor(x); });
+  //
+  //   return face_descriptors;
+  // }
+};
 } // namespace wrapper
