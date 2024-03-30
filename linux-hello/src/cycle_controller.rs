@@ -19,9 +19,7 @@ impl CycleController {
     }
 
     pub fn throttle(&self, cps: f64) {
-        if cps <= 0_f64 {
-            panic!("cps must be positive not zero value")
-        }
+        assert!(cps > 0_f64, "cps must be positive not zero value");
 
         let spc: f64 = 1_f64 / cps;
         let sleep_duration =

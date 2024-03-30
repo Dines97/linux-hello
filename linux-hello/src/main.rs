@@ -1,15 +1,19 @@
+mod cli;
 mod cycle_controller;
+mod types;
 
-use cycle_controller::CycleController;
-use dlib::face_recognition::FaceRecognition;
-use dlib_sys::{cv_image::CvImage, image_window::ImageWindow};
+use clap::Parser;
+use cli::Runnable;
 use env_logger::{Builder, Target};
-use opencv_sys::{
-    mat::Mat,
-    video_capture::{VideoCapture, VideoCaptureAPIs},
+use std::{
+    fs::{File, OpenOptions},
+    io::{BufReader, BufWriter, Read},
+    path::Path,
+    sync::RwLock,
 };
+use types::{Data, GLOBAL_DATA};
 
-fn main() {
+fn main() -> color_eyre::Result<()> {
     Builder::from_default_env()
         .target(Target::Stdout)
         .filter_level(log::LevelFilter::Trace)
@@ -17,39 +21,30 @@ fn main() {
 
     opencv_sys::set_num_threads(1);
 
-    let mut video_capture: VideoCapture = VideoCapture::new(0, VideoCaptureAPIs::CapAny);
+    let file_path = "data.json";
+    let data: types::Data = if Path::new(file_path).exists() {
+        let file = File::open(file_path).expect("Failed to read file");
+        let reader = BufReader::new(file);
+        serde_json::from_reader(reader).expect("Failed to deserialize")
+    } else {
+        types::Data::new()
+    };
+    GLOBAL_DATA.set(RwLock::new(data));
 
-    log::info!("OpenCV backend name: {}", video_capture.get_backend_name());
+    let cli = cli::Cli::parse();
+    let _ = cli.command.run();
 
-    let mut mat: Mat = Mat::new();
+    let output_file = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .create(true)
+        .open(file_path)
+        .expect("Failed to open output file");
+    let writer = BufWriter::new(output_file);
 
-    let mut image_window: ImageWindow = ImageWindow::new();
-    let mut face_image_window: ImageWindow = ImageWindow::new();
+    let _ = serde_json::to_writer(writer, GLOBAL_DATA.get());
 
-    let mut cycle_controller: CycleController = CycleController::new();
-
-    let face_recognition: FaceRecognition = FaceRecognition::new();
-
-    loop {
-        video_capture.stream_extraction(&mut mat);
-
-        let cv_image: CvImage = CvImage::new(&mat);
-
-        let faces = face_recognition.get_faces(&cv_image);
-
-        image_window.clear_overlay();
-        faces.iter().for_each(|x| {
-            image_window.add_rectangle_overlay(x.rectangle.clone());
-            let overlays = x.full_object_detection.render_face_detections();
-            image_window.add_line_overlay(overlays);
-            face_image_window.set_matrix(&x.face_chip);
-        });
-        image_window.set_cv_image(&cv_image);
-
-        cycle_controller.throttle(10.0);
-        log::trace!("{}", cycle_controller);
-        cycle_controller.update();
-    }
+    Ok(())
 }
 
 // fn main() {

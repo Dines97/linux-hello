@@ -5,6 +5,7 @@ use dlib_sys::{
     frontal_face_detector::FrontalFaceDetector,
     full_object_detection::{self, FullObjectDetection},
     matrix::Matrix,
+    matrix_descriptor::MatrixDescriptor,
     rectangle::Rectangle,
     shape_predictor::ShapePredictor,
 };
@@ -50,13 +51,15 @@ impl FaceRecognition {
             &mut image_chip,
         );
 
-        self.face_recogntion_resnet_model_v1
+        let matrix_descriptor: MatrixDescriptor = self
+            .face_recogntion_resnet_model_v1
             .function_call(&image_chip);
 
         Face {
             rectangle: rectangle.clone(),
             full_object_detection,
             face_chip: image_chip,
+            face_descriptor: matrix_descriptor,
         }
     }
 }

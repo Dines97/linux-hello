@@ -15,6 +15,7 @@ pub mod frontal_face_detector;
 pub mod full_object_detection;
 pub mod image_window;
 pub mod matrix;
+pub mod matrix_descriptor;
 pub mod overlay_line;
 pub mod rectangle;
 pub mod shape_predictor;
@@ -44,6 +45,7 @@ autocxx::include_cpp! {
     generate!("wrapper::CvImage")
     generate!("wrapper::ImageWindow")
     generate!("wrapper::Matrix")
+    generate!("wrapper::MatrixDescriptor")
 
     generate_pod!("wrapper::ChipDetails")
 
