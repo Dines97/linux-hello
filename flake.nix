@@ -1,30 +1,33 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    fup.url = "github:gytis-ivaskevicius/flake-utils-plus/master";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
   description = "Default flake";
 
-  outputs = {self, ...} @ inputs:
-    inputs.fup.lib.mkFlake {
-      inherit self inputs;
-
-      channelsConfig = {
-        cudaSupport = true;
-        allowUnfree = true;
-      };
-
-      sharedOverlays = [
-        inputs.rust-overlay.overlays.default
-      ];
-
-      outputsBuilder = channels: {
+  outputs = inputs @ {...}:
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = ["x86_64-linux"];
+      perSystem = {
+        pkgs,
+        system,
+        ...
+      }: {
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [
+            inputs.rust-overlay.overlays.default
+          ];
+          config = {
+            allowUnfree = true;
+          };
+        };
         devShells = {
-          default = channels.nixpkgs.cudaPackages.backendStdenv.mkDerivation {
+          default = pkgs.cudaPackages.backendStdenv.mkDerivation {
             name = "nix-shell";
-            nativeBuildInputs = with channels.nixpkgs.pkgs; [
+            nativeBuildInputs = with pkgs; [
               rust-bin.stable.latest.default
               cargo-flamegraph
 
@@ -35,8 +38,7 @@
 
               cudaPackages.cuda_nvcc
             ];
-
-            buildInputs = with channels.nixpkgs.pkgs; [
+            buildInputs = with pkgs; [
               cxx-rs
 
               (opencv.override {
@@ -60,23 +62,23 @@
               xorg.libX11.dev
               # cudatoolkit
 
-             cudaPackages.cuda_cudart.dev
-             cudaPackages.cuda_cudart.lib
-             cudaPackages.cuda_cudart.static
-             cudaPackages.cuda_nvcc.dev
-             cudaPackages.libcublas.dev
-             cudaPackages.libcublas.lib
-             cudaPackages.libcublas.static
-             cudaPackages.libcurand.dev
-             cudaPackages.libcurand.lib
-             cudaPackages.libcurand.static
-             cudaPackages.libcusolver.dev
-             cudaPackages.libcusolver.lib
-             cudaPackages.libcusolver.static
-             cudaPackages.cudnn.dev
-             cudaPackages.cudnn.lib
-             cudaPackages.cudnn.static
-             cudaPackages.cuda_cccl.dev
+              cudaPackages.cuda_cudart.dev
+              cudaPackages.cuda_cudart.lib
+              cudaPackages.cuda_cudart.static
+              cudaPackages.cuda_nvcc.dev
+              cudaPackages.libcublas.dev
+              cudaPackages.libcublas.lib
+              cudaPackages.libcublas.static
+              cudaPackages.libcurand.dev
+              cudaPackages.libcurand.lib
+              cudaPackages.libcurand.static
+              cudaPackages.libcusolver.dev
+              cudaPackages.libcusolver.lib
+              cudaPackages.libcusolver.static
+              cudaPackages.cudnn.dev
+              cudaPackages.cudnn.lib
+              cudaPackages.cudnn.static
+              cudaPackages.cuda_cccl.dev
             ];
           };
         };
