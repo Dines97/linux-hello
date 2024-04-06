@@ -11,7 +11,7 @@ inputs.flake-parts.lib.mkFlake {inherit inputs;} {
     _module.args.pkgs = import inputs.nixpkgs {
       inherit system;
       overlays = [
-        # inputs.rust-overlay.overlays.default
+        inputs.rust-overlay.overlays.default
       ];
       config = {
         allowUnfree = true;
@@ -22,15 +22,22 @@ inputs.flake-parts.lib.mkFlake {inherit inputs;} {
     };
 
     devShells = {
-      default = self'.packages.default.overrideAttrs (old: {
-        nativeBuildInputs = with pkgs;
-          old.nativeBuildInputs
-          ++ [
-            cmake
+      default =
+        (self'.packages.default.overrideAttrs (old: {
+          nativeBuildInputs = with pkgs;
+            old.nativeBuildInputs
+            ++ [
+              cmake
 
-            cargo-flamegraph
-          ];
-      });
+              cargo-flamegraph
+            ];
+        }))
+        .override {
+          rustPlatform = pkgs.makeRustPlatform {
+            cargo = pkgs.rust-bin.stable.latest.default;
+            rustc = pkgs.rust-bin.stable.latest.default;
+          };
+        };
     };
   };
 }
