@@ -1,5 +1,5 @@
-use crate::cycle_controller::CycleController;
 use crate::Runnable;
+use crate::{config::GLOBAL_CONFIG, cycle_controller::CycleController};
 
 use clap::Args;
 use color_eyre::Result;
@@ -13,13 +13,17 @@ use opencv_sys::{
 #[derive(Debug, Args)]
 pub(crate) struct TestArgs {
     #[arg(short, long)]
-    pub camera: i32,
+    pub camera: Option<i32>,
 }
 
 impl Runnable for TestArgs {
     fn run(&self) -> Result<()> {
-        let mut video_capture: VideoCapture =
-            VideoCapture::new(self.camera, VideoCaptureAPIs::CapAny);
+        let config = GLOBAL_CONFIG.read().unwrap();
+
+        let mut video_capture: VideoCapture = VideoCapture::new(
+            self.camera.unwrap_or(config.video.camera_index),
+            config.video.video_capture_api,
+        );
 
         log::info!("OpenCV backend name: {}", video_capture.get_backend_name());
 
@@ -30,7 +34,10 @@ impl Runnable for TestArgs {
 
         let mut cycle_controller: CycleController = CycleController::new();
 
-        let face_recognition: FaceRecognition = FaceRecognition::new();
+        let face_recognition: FaceRecognition = FaceRecognition::new(
+            config.models.shape_predictor.file_path.clone(),
+            config.models.face_recognition.file_path.clone(),
+        );
 
         let mut prev: Vec<f32> = vec![0_f32; 128];
 
@@ -66,14 +73,9 @@ impl Runnable for TestArgs {
 }
 
 fn euclidean_distance(left: &[f32], right: &[f32]) -> f32 {
-    assert!(
-        left.len() == right.len(),
-        "Vectors must have the same length"
-    );
+    assert!(left.len() == right.len(), "Vectors must have the same length");
 
-    let sum_of_squares: f32 = std::iter::zip(left, right)
-        .map(|(&x, &y)| (x - y).powi(2))
-        .sum();
+    let sum_of_squares: f32 = std::iter::zip(left, right).map(|(&x, &y)| (x - y).powi(2)).sum();
 
     sum_of_squares.sqrt()
 }

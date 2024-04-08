@@ -8,6 +8,7 @@
   blas,
   lapack,
   xorg,
+  openssl,
 }:
 rustPlatform.buildRustPackage {
   pname = "linux-hello";
@@ -45,7 +46,7 @@ rustPlatform.buildRustPackage {
     blas
     lapack
     xorg.libX11.dev
-    # cudatoolkit
+    openssl
 
     cudaPackages.cuda_cudart.dev
     cudaPackages.libcublas.dev

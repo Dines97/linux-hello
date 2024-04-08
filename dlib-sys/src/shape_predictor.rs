@@ -1,5 +1,5 @@
 use autocxx::prelude::*;
-use cxx::CxxVector;
+use cxx::{let_cxx_string, CxxVector};
 
 use crate::{
     cv_image::CvImage, full_object_detection::FullObjectDetection, matrix::Matrix,
@@ -11,9 +11,9 @@ pub struct ShapePredictor {
 }
 
 impl ShapePredictor {
-    pub fn new() -> Self {
+    pub fn new(file_path: String) -> Self {
         Self {
-            inner: crate::ffi::wrapper::ShapePredictor::new().within_unique_ptr(),
+            inner: crate::ffi::wrapper::ShapePredictor::new(file_path).within_unique_ptr(),
         }
     }
 

@@ -2,7 +2,7 @@ use dlib_sys::{
     chip_details::ChipDetails,
     cv_image::CvImage,
     face_recognition_resnet_model_v1::FaceRecognitionResnetModelV1,
-    frontal_face_detector::FrontalFaceDetector,
+    frontal_face_detector::{self, FrontalFaceDetector},
     full_object_detection::{self, FullObjectDetection},
     matrix::Matrix,
     matrix_descriptor::MatrixDescriptor,
@@ -19,11 +19,16 @@ pub struct FaceRecognition {
 }
 
 impl FaceRecognition {
-    pub fn new() -> Self {
+    pub fn new(
+        shape_predictor_file_path: String,
+        face_recognition_detector_file_path: String,
+    ) -> Self {
         Self {
             frontal_face_detector: FrontalFaceDetector::new(),
-            shape_predictor: ShapePredictor::new(),
-            face_recogntion_resnet_model_v1: FaceRecognitionResnetModelV1::new(),
+            shape_predictor: ShapePredictor::new(shape_predictor_file_path),
+            face_recogntion_resnet_model_v1: FaceRecognitionResnetModelV1::new(
+                face_recognition_detector_file_path,
+            ),
         }
     }
 
@@ -61,11 +66,5 @@ impl FaceRecognition {
             face_chip: image_chip,
             face_descriptor: matrix_descriptor,
         }
-    }
-}
-
-impl Default for FaceRecognition {
-    fn default() -> Self {
-        Self::new()
     }
 }

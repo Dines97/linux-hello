@@ -1,6 +1,7 @@
 use std::fmt::Debug;
 
 use autocxx::prelude::*;
+use cxx::let_cxx_string;
 
 use crate::{matrix::Matrix, matrix_descriptor::MatrixDescriptor};
 
@@ -9,9 +10,10 @@ pub struct FaceRecognitionResnetModelV1 {
 }
 
 impl FaceRecognitionResnetModelV1 {
-    pub fn new() -> Self {
+    pub fn new(file_path: String) -> Self {
         Self {
-            inner: crate::ffi::wrapper::FaceRecognitionResnetModelV1::new().within_unique_ptr(),
+            inner: crate::ffi::wrapper::FaceRecognitionResnetModelV1::new(file_path)
+                .within_unique_ptr(),
         }
     }
 
@@ -23,11 +25,5 @@ impl FaceRecognitionResnetModelV1 {
                 .function_call(matrix.inner.as_ref().unwrap())
                 .within_unique_ptr(),
         }
-    }
-}
-
-impl Default for FaceRecognitionResnetModelV1 {
-    fn default() -> Self {
-        Self::new()
     }
 }

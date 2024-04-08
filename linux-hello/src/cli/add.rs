@@ -6,7 +6,10 @@ use opencv_sys::{
     video_capture::{VideoCapture, VideoCaptureAPIs},
 };
 
-use crate::types::{Face, Identity, GLOBAL_DATA};
+use crate::{
+    config::GLOBAL_CONFIG,
+    state::{Face, Identity, GLOBAL_DATA},
+};
 
 use super::Runnable;
 use color_eyre::Result;
@@ -17,7 +20,11 @@ pub(crate) struct AddArgs {}
 impl Runnable for AddArgs {
     fn run(&self) -> Result<()> {
         let mut video_capture: VideoCapture = VideoCapture::new(0, VideoCaptureAPIs::CapAny);
-        let face_recognition: FaceRecognition = FaceRecognition::new();
+        let config = GLOBAL_CONFIG.read().unwrap();
+        let face_recognition: FaceRecognition = FaceRecognition::new(
+            config.models.shape_predictor.file_path.clone(),
+            config.models.face_recognition.file_path.clone(),
+        );
 
         let mut mat: Mat = Mat::new();
 

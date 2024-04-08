@@ -55,8 +55,8 @@ namespace wrapper {
 struct FaceRecognitionResnetModelV1 {
   dlib_ext::anet_type inner;
 
-  FaceRecognitionResnetModelV1() {
-    dlib::deserialize("dlib_face_recognition_resnet_model_v1.dat") >> inner;
+  FaceRecognitionResnetModelV1(const std::string file_path) {
+    dlib::deserialize(file_path) >> inner;
   }
 
   MatrixDescriptor function_call(const Matrix &matrix) const {

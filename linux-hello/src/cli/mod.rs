@@ -1,4 +1,5 @@
 mod add;
+mod download;
 mod test;
 
 use ambassador::{delegatable_trait, Delegate};
@@ -26,4 +27,5 @@ pub(crate) struct Cli {
 pub(crate) enum Commands {
     Add(add::AddArgs),
     Test(test::TestArgs),
+    Download(download::DownloadArgs),
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include <dlib/image_processing/shape_predictor.h>
@@ -14,13 +15,14 @@ namespace wrapper {
 struct ShapePredictor {
   dlib::shape_predictor inner;
 
-  ShapePredictor() {
-    dlib::deserialize("shape_predictor_68_face_landmarks.dat") >> inner;
+  ShapePredictor(const std::string file_path) {
+    dlib::deserialize(file_path) >> inner;
   }
 
-  FullObjectDetection
-  function_call(const CvImage &cv_image, Rectangle rectangle) const {
-    return FullObjectDetection(const_cast<dlib::shape_predictor &>(inner)(cv_image.inner, rectangle.inner));
+  FullObjectDetection function_call(const CvImage &cv_image,
+                                    Rectangle rectangle) const {
+    return FullObjectDetection(const_cast<dlib::shape_predictor &>(inner)(
+        cv_image.inner, rectangle.inner));
   }
 
   // std::vector<Rectangle> functionCall(CvImage &cv_image) {
