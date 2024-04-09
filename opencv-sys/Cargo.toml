@@ -9,7 +9,7 @@ build = "build.rs"
 links = "opencv4"
 
 [dependencies]
-cxx = "1.0.120"
+cxx = "1.0.121"
 autocxx = "0.26.0"
 serde = "1.0.197"
 
