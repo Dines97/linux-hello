@@ -20,8 +20,10 @@ jobs:
       - uses: cachix/cachix-action@master
         with:
           name: dines97
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - name: Build
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      - name: nix develop build
         run: nix develop --command cargo build --verbose
-      - name: Run tests
+      - name: nix develop test
         run: nix develop --command cargo test --verbose
+      - name: nix build
+        run: nix build
