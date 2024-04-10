@@ -12,8 +12,7 @@ pub struct FaceRecognitionResnetModelV1 {
 impl FaceRecognitionResnetModelV1 {
     pub fn new(file_path: String) -> Self {
         Self {
-            inner: crate::ffi::wrapper::FaceRecognitionResnetModelV1::new(file_path)
-                .within_unique_ptr(),
+            inner: crate::ffi::wrapper::FaceRecognitionResnetModelV1::new(file_path).within_unique_ptr(),
         }
     }
 

@@ -20,29 +20,26 @@ impl ImageWindow {
     }
 
     pub fn set_matrix(&mut self, matrix: &Matrix) {
-        self.inner
-            .pin_mut()
-            .set_matrix(matrix.inner.as_ref().unwrap())
+        self.inner.pin_mut().set_matrix(matrix.inner.as_ref().unwrap())
     }
 
     pub fn set_cv_image(&mut self, cv_image: &CvImage) {
-        self.inner
-            .pin_mut()
-            .set_cv_image(cv_image.inner.as_ref().unwrap())
+        self.inner.pin_mut().set_cv_image(cv_image.inner.as_ref().unwrap())
     }
 
     pub fn add_rectangle_overlay(&mut self, rectangle: Rectangle) {
         self.inner.pin_mut().add_rectangle_overlay(rectangle.inner);
     }
 
-    pub fn add_line_overlay(
-        &mut self,
-        overlay_lines: UniquePtr<CxxVector<crate::ffi::wrapper::OverlayLine>>,
-    ) {
+    pub fn add_line_overlay(&mut self, overlay_lines: UniquePtr<CxxVector<crate::ffi::wrapper::OverlayLine>>) {
         self.inner.pin_mut().add_line_overlay(overlay_lines);
     }
 
     pub fn clear_overlay(&mut self) {
         self.inner.pin_mut().clear_overlay();
+    }
+
+    pub fn is_closed(&self) -> bool {
+        self.inner.is_closed()
     }
 }

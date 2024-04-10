@@ -1,14 +1,11 @@
-use crate::Runnable;
 use crate::{config::GLOBAL_CONFIG, cycle_controller::CycleController};
+use crate::{utils, Runnable};
 
 use clap::Args;
+use color_eyre::eyre::Ok;
 use color_eyre::Result;
-use dlib::face_recognition::FaceRecognition;
 use dlib_sys::{cv_image::CvImage, image_window::ImageWindow};
-use opencv_sys::{
-    mat::Mat,
-    video_capture::{VideoCapture, VideoCaptureAPIs},
-};
+use opencv_sys::{mat::Mat, video_capture::VideoCapture};
 
 #[derive(Debug, Args)]
 pub(crate) struct TestArgs {
@@ -34,14 +31,11 @@ impl Runnable for TestArgs {
 
         let mut cycle_controller: CycleController = CycleController::new();
 
-        let face_recognition: FaceRecognition = FaceRecognition::new(
-            config.models.shape_predictor.file_path.clone(),
-            config.models.face_recognition.file_path.clone(),
-        );
+        let face_recognition = utils::build_face_recognition();
 
         let mut prev: Vec<f32> = vec![0_f32; 128];
 
-        loop {
+        'main: loop {
             video_capture.stream_extraction(&mut mat);
 
             let cv_image: CvImage = CvImage::new(&mat);
@@ -56,19 +50,27 @@ impl Runnable for TestArgs {
                 image_window.add_line_overlay(overlays);
                 face_image_window.set_matrix(&x.face_chip);
 
-                log::trace!(
-                    "Accuracy: {}",
-                    euclidean_distance(&x.face_descriptor.to_vec(), &prev.to_vec())
-                );
+                euclidean_distance(&x.face_descriptor.to_vec(), &prev.to_vec());
+
+                // log::trace!(
+                //     "Accuracy: {}",
+                //     euclidean_distance(&x.face_descriptor.to_vec(), &prev.to_vec())
+                // );
 
                 prev = x.face_descriptor.to_vec();
             });
             image_window.set_cv_image(&cv_image);
 
-            cycle_controller.throttle(10.0);
+            // cycle_controller.throttle(10.0);
             // log::trace!("{}", cycle_controller);
             cycle_controller.update();
+
+            if image_window.is_closed() {
+                break 'main;
+            }
         }
+
+        Ok(())
     }
 }
 

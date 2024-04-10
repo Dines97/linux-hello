@@ -9,6 +9,7 @@ use opencv_sys::{
 use crate::{
     config::GLOBAL_CONFIG,
     state::{Face, Identity, GLOBAL_DATA},
+    utils::build_face_recognition,
 };
 
 use super::Runnable;
@@ -21,11 +22,7 @@ impl Runnable for AddArgs {
     fn run(&self) -> Result<()> {
         let mut video_capture: VideoCapture = VideoCapture::new(0, VideoCaptureAPIs::CapAny);
         let config = GLOBAL_CONFIG.read().unwrap();
-        let face_recognition: FaceRecognition = FaceRecognition::new(
-            config.models.shape_predictor.file_path.clone(),
-            config.models.face_recognition.file_path.clone(),
-        );
-
+        let face_recognition: FaceRecognition = build_face_recognition();
         let mut mat: Mat = Mat::new();
 
         let mut faces: Vec<dlib::face::Face>;

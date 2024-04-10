@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <dlib/gui_widgets.h>
 #include <dlib/gui_widgets/widgets.h>
+#include <exception>
 #include <iterator>
 #include <memory>
 #include <vector>
@@ -38,5 +39,13 @@ struct ImageWindow {
   }
 
   void clear_overlay() { this->inner.clear_overlay(); }
+
+  const bool is_closed() const {
+    try {
+      return this->inner.is_closed();
+    } catch (const std::exception &e) {
+      return false;
+    }
+  }
 };
 } // namespace wrapper

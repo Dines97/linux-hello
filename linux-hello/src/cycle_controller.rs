@@ -22,8 +22,7 @@ impl CycleController {
         assert!(cps > 0_f64, "cps must be positive not zero value");
 
         let spc: f64 = 1_f64 / cps;
-        let sleep_duration =
-            Duration::from_secs_f64(f64::max(0_f64, spc - self.instant.elapsed().as_secs_f64()));
+        let sleep_duration = Duration::from_secs_f64(f64::max(0_f64, spc - self.instant.elapsed().as_secs_f64()));
         thread::sleep(sleep_duration)
     }
 }
