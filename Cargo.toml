@@ -1,6 +1,6 @@
 [workspace]
-members = [ "dlib", "dlib-sys", "linux-hello","opencv-sys"]
+members = ["dlib-support", "dlib-sys", "linux-hello", "opencv-sys"]
 resolver = "2"
 
-[profile.release]
-debug = true
+# [profile.release]
+# debug = true

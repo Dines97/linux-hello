@@ -1,3 +1,3 @@
 [video]
-camera_index = 2
+camera_index = 0
 video_capture_api = "CapVFW"

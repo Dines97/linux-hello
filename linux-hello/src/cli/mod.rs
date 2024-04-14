@@ -1,6 +1,6 @@
 mod add;
 mod download;
-mod test;
+mod live;
 
 use ambassador::{delegatable_trait, Delegate};
 use clap::{Parser, Subcommand};
@@ -26,6 +26,6 @@ pub(crate) struct Cli {
 #[delegate(Runnable)]
 pub(crate) enum Commands {
     Add(add::AddArgs),
-    Test(test::TestArgs),
+    Live(live::LiveArgs),
     Download(download::DownloadArgs),
 }

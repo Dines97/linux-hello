@@ -1,46 +1,52 @@
-use crate::{config::GLOBAL_CONFIG, cycle_controller::CycleController};
-use crate::{utils, Runnable};
+use std::sync::mpsc::Receiver;
 
-use clap::Args;
-use color_eyre::eyre::Ok;
-use color_eyre::Result;
+use color_eyre::eyre::Result;
 use dlib_sys::{cv_image::CvImage, image_window::ImageWindow};
-use opencv_sys::{mat::Mat, video_capture::VideoCapture};
 
-#[derive(Debug, Args)]
-pub(crate) struct TestArgs {
-    #[arg(short, long)]
-    pub camera: Option<i32>,
+use crate::cycle_controller::CycleController;
+
+use self::{face_recognition::FaceRecogntion, video_capture_thread::VideoCaptureThread};
+
+mod face_recognition;
+mod video_capture_thread;
+
+pub(crate) struct Core {
+    pub(crate) video_capture_thread: Option<VideoCaptureThread>,
+    pub(crate) face_recognition: FaceRecogntion,
+    pub(crate) receiver: Receiver<CvImage>,
 }
 
-impl Runnable for TestArgs {
-    fn run(&self) -> Result<()> {
-        let config = GLOBAL_CONFIG.read().unwrap();
+impl Default for Core {
+    fn default() -> Self {
+        let (sender, receiver) = std::sync::mpsc::channel();
+        Self {
+            video_capture_thread: Some(VideoCaptureThread::new(sender)),
+            face_recognition: Default::default(),
+            receiver,
+        }
+    }
+}
 
-        let mut video_capture: VideoCapture = VideoCapture::new(
-            self.camera.unwrap_or(config.video.camera_index),
-            config.video.video_capture_api,
-        );
-
-        log::info!("OpenCV backend name: {}", video_capture.get_backend_name());
-
-        let mut mat: Mat = Mat::new();
-
+impl Core {
+    pub(crate) fn run(&mut self) -> Result<()> {
         let mut image_window: ImageWindow = ImageWindow::new();
         let mut face_image_window: ImageWindow = ImageWindow::new();
 
         let mut cycle_controller: CycleController = CycleController::new();
 
-        let face_recognition = utils::build_face_recognition();
-
         let mut prev: Vec<f32> = vec![0_f32; 128];
 
+        let mut counter = 0;
+
         'main: loop {
-            video_capture.stream_extraction(&mut mat);
+            counter += 1;
+            if counter > 100 {
+                drop(self.video_capture_thread.take());
+            }
 
-            let cv_image: CvImage = CvImage::new(&mat);
+            let cv_image = self.receiver.recv().expect("Unable receive camera stream");
 
-            let faces = face_recognition.get_faces(&cv_image);
+            let faces = self.face_recognition.execute(&cv_image);
 
             image_window.clear_overlay();
 
@@ -62,7 +68,7 @@ impl Runnable for TestArgs {
             image_window.set_cv_image(&cv_image);
 
             // cycle_controller.throttle(10.0);
-            // log::trace!("{}", cycle_controller);
+            log::trace!("Face recognition {}", cycle_controller);
             cycle_controller.update();
 
             if image_window.is_closed() {

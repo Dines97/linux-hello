@@ -8,23 +8,46 @@ use std::{
 
 use crate::config::GLOBAL_CONFIG;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct Face {
     pub(crate) vec: Vec<f32>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct Identity {
     pub(crate) name: String,
     pub(crate) faces: Vec<Face>,
 }
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
+pub(crate) struct User {
+    pub(crate) name: String,
+    pub(crate) uid: u32,
+}
+
+impl From<nix::unistd::User> for User {
+    fn from(value: nix::unistd::User) -> Self {
+        Self {
+            name: value.name,
+            uid: value.uid.into(),
+        }
+    }
+}
+
+impl User {
+    pub(crate) fn current() -> Self {
+        let uid = nix::unistd::Uid::current();
+        Self::from(nix::unistd::User::from_uid(uid).unwrap().unwrap())
+    }
+}
+
+#[derive(Default, Debug, Serialize, Deserialize)]
 pub(crate) struct Data {
+    // pub(crate) users: Vec<User>,
     pub(crate) identities: Vec<Identity>,
 }
 
-pub(crate) static GLOBAL_DATA: state::InitCell<RwLock<Data>> = state::InitCell::new();
+pub(crate) static GLOBAL_DATA: once_cell::sync::OnceCell<RwLock<Data>> = once_cell::sync::OnceCell::new();
 
 pub fn serialize() {
     let config = GLOBAL_CONFIG.read().unwrap();
@@ -37,7 +60,7 @@ pub fn serialize() {
         .expect("Failed to open output file");
     let writer = BufWriter::new(output_file);
 
-    let _ = serde_json::to_writer(writer, GLOBAL_DATA.get());
+    let _ = serde_json::to_writer(writer, GLOBAL_DATA.get().unwrap());
 }
 
 pub fn deserialize() {
@@ -54,5 +77,5 @@ pub fn deserialize() {
         Data::default()
     };
 
-    GLOBAL_DATA.set(RwLock::new(data));
+    GLOBAL_DATA.set(RwLock::new(data)).unwrap();
 }

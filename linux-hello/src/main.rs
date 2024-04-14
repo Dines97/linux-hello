@@ -1,8 +1,8 @@
 mod cli;
 mod config;
+mod core;
 mod cycle_controller;
 mod state;
-mod utils;
 
 use clap::Parser;
 use cli::Runnable;

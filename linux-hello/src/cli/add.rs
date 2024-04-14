@@ -1,16 +1,6 @@
 use clap::Args;
-use dlib::face_recognition::FaceRecognition;
-use dlib_sys::cv_image::CvImage;
-use opencv_sys::{
-    mat::Mat,
-    video_capture::{VideoCapture, VideoCaptureAPIs},
-};
 
-use crate::{
-    config::GLOBAL_CONFIG,
-    state::{Face, Identity, GLOBAL_DATA},
-    utils::build_face_recognition,
-};
+use crate::core::Core;
 
 use super::Runnable;
 use color_eyre::Result;
@@ -20,38 +10,48 @@ pub(crate) struct AddArgs {}
 
 impl Runnable for AddArgs {
     fn run(&self) -> Result<()> {
-        let mut video_capture: VideoCapture = VideoCapture::new(0, VideoCaptureAPIs::CapAny);
-        let config = GLOBAL_CONFIG.read().unwrap();
-        let face_recognition: FaceRecognition = build_face_recognition();
-        let mut mat: Mat = Mat::new();
-
-        let mut faces: Vec<dlib::face::Face>;
-
-        loop {
-            video_capture.stream_extraction(&mut mat);
-
-            let cv_image: CvImage = CvImage::new(&mat);
-            faces = face_recognition.get_faces(&cv_image);
-
-            if faces.len() == 1 {
-                break;
-            }
-        }
-
-        let dlib_face = faces.first().unwrap();
-
-        let face: Face = Face {
-            vec: dlib_face.face_descriptor.to_vec(),
-        };
-
-        let identity: Identity = Identity {
-            name: String::from("placeholder"),
-            faces: vec![face],
-        };
-
-        let a = GLOBAL_DATA.get().write();
-        a.unwrap().identities.push(identity);
-
-        Ok(())
+        let mut core = Core::default();
+        core.run()
     }
 }
+
+// impl Runnable for AddArgs {
+//     fn run(&self) -> Result<()> {
+//         let user = User::current();
+//
+//         let mut video_capture: VideoCapture = VideoCapture::new(0, VideoCaptureAPIs::CapAny);
+//         let config = GLOBAL_CONFIG.read().unwrap();
+//         let face_recognition: FaceRecognition = build_face_recognition();
+//         let mut mat: Mat = Mat::default();
+//
+//         let mut faces: Vec<dlib_support::face::Face>;
+//
+//         loop {
+//             // video_capture.stream_extraction(&mut mat);
+//
+//             // let cv_image: CvImage = CvImage::from(mat);
+//             // faces = face_recognition.get_faces(&cv_image);
+//
+//             // if faces.len() == 1 {
+//             //     break;
+//             // }
+//         }
+//
+//         let dlib_face = faces.first().unwrap();
+//
+//         let face: Face = Face {
+//             vec: dlib_face.face_descriptor.to_vec(),
+//         };
+//
+//         let identity: Identity = Identity {
+//             name: String::from("placeholder"),
+//             faces: vec![face],
+//         };
+//
+//         log::info!("Writing user to database");
+//         let a = GLOBAL_DATA.get().unwrap().write();
+//         a.unwrap().identities.push(identity);
+//
+//         Ok(())
+//     }
+// }

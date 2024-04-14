@@ -1,16 +1,16 @@
+use once_cell::sync;
 use std::{env, path::PathBuf, sync::RwLock};
 
 use figment::{
     providers::{Env, Format, Serialized, Toml},
     Figment,
 };
-use once_cell::sync::Lazy;
 use opencv_sys::video_capture::VideoCaptureAPIs;
 use serde::{Deserialize, Serialize};
 
 static ENV_PREFIX: &str = "LINUX_HELLO__";
-static ETC_PATH: Lazy<PathBuf> = Lazy::new(|| PathBuf::from("/etc/linux-hello/"));
-static STATE_PATH: Lazy<PathBuf> = Lazy::new(|| PathBuf::from("/var/lib/linux-hello/"));
+static ETC_PATH: sync::Lazy<PathBuf> = sync::Lazy::new(|| PathBuf::from("/etc/linux-hello/"));
+static STATE_PATH: sync::Lazy<PathBuf> = sync::Lazy::new(|| PathBuf::from("/var/lib/linux-hello/"));
 
 #[derive(Debug, Deserialize, Serialize)]
 pub(crate) struct ShapePredictor {
@@ -130,4 +130,4 @@ impl Config {
     }
 }
 
-pub(crate) static GLOBAL_CONFIG: Lazy<RwLock<Config>> = Lazy::new(|| RwLock::new(Config::new()));
+pub(crate) static GLOBAL_CONFIG: sync::Lazy<RwLock<Config>> = sync::Lazy::new(|| RwLock::new(Config::new()));

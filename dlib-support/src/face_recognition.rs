@@ -16,14 +16,11 @@ pub struct FaceRecognition {
 
 impl FaceRecognition {
     pub fn new<P: AsRef<Path>>(shape_predictor_file_path: P, face_recognition_file_path: P) -> Self {
-        let shape_predictor_file_path = shape_predictor_file_path.as_ref();
-        let face_recognition_file_path = face_recognition_file_path.as_ref();
-
         Self {
             frontal_face_detector: FrontalFaceDetector::new(),
-            shape_predictor: ShapePredictor::new(shape_predictor_file_path.to_str().unwrap().to_string()),
+            shape_predictor: ShapePredictor::new(shape_predictor_file_path.as_ref().to_str().unwrap()),
             face_recogntion_resnet_model_v1: FaceRecognitionResnetModelV1::new(
-                face_recognition_file_path.to_str().unwrap().to_string(),
+                face_recognition_file_path.as_ref().to_str().unwrap(),
             ),
         }
     }

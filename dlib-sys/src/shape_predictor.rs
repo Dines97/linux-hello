@@ -1,14 +1,16 @@
+use std::path::Path;
+
 use autocxx::prelude::*;
 use cxx::{let_cxx_string, CxxVector};
 
-use crate::{cv_image::CvImage, full_object_detection::FullObjectDetection, matrix::Matrix, rectangle::Rectangle};
+use crate::{cv_image::CvImage, ffi, full_object_detection::FullObjectDetection, rectangle::Rectangle};
 
 pub struct ShapePredictor {
     pub(crate) inner: cxx::UniquePtr<crate::ffi::wrapper::ShapePredictor>,
 }
 
 impl ShapePredictor {
-    pub fn new(file_path: String) -> Self {
+    pub fn new<T: ffi::ToCppString>(file_path: T) -> Self {
         Self {
             inner: crate::ffi::wrapper::ShapePredictor::new(file_path).within_unique_ptr(),
         }
