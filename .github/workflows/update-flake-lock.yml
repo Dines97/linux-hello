@@ -1,0 +1,33 @@
+name: Update flake lock
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@master
+
+      - uses: cachix/cachix-action@master
+        with:
+          name: dines97
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Check flake
+        uses: DeterminateSystems/flake-checker-action@main
+
+      - name: Update flake.lock
+        uses: DeterminateSystems/update-flake-lock@main
+        with:
+          commit-msg: "build(deps): update flake.lock"
+          pr-title: "build(deps): update flake.lock"
+          pr-labels: |
+            dependencies
+            nix
