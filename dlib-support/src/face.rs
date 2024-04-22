@@ -4,3 +4,5 @@ pub struct Face {
     pub face_chip: dlib_sys::matrix::Matrix,
     pub face_descriptor: dlib_sys::matrix_descriptor::MatrixDescriptor,
 }
+
+unsafe impl Send for Face {}

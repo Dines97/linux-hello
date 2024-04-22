@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use crate::core::Core;
 use crate::Runnable;
 
@@ -13,7 +15,10 @@ pub(crate) struct LiveArgs {
 impl Runnable for LiveArgs {
     fn run(&self) -> Result<()> {
         let mut core = Core::default();
-        core.run()
+        // core.run()
+
+        std::thread::sleep(Duration::new(60, 0));
+        Ok(())
     }
 }
 

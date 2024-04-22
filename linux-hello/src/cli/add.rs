@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use clap::Args;
 
 use crate::core::Core;
@@ -11,7 +13,11 @@ pub(crate) struct AddArgs {}
 impl Runnable for AddArgs {
     fn run(&self) -> Result<()> {
         let mut core = Core::default();
-        core.run()
+        // core.run()
+
+        std::thread::sleep(Duration::new(60, 0));
+
+        Ok(())
     }
 }
 
