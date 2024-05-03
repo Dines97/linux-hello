@@ -1,5 +1,6 @@
+use crossbeam_channel::Sender;
 use std::{
-    sync::{mpsc::Sender, Arc, Mutex},
+    sync::{Arc, Mutex},
     thread,
 };
 

@@ -1,8 +1,6 @@
+use crossbeam_channel::{Receiver, Sender};
 use std::{
-    sync::{
-        mpsc::{Receiver, Sender},
-        Arc, Mutex,
-    },
+    sync::{Arc, Mutex},
     thread,
 };
 
@@ -29,6 +27,7 @@ impl TransformBlock {
 
         let handle = Some(thread::spawn(move || {
             while *continue_flag_clone.lock().unwrap() {
+                log::trace!("Len: {}", receiver.len());
                 let input = receiver.recv().unwrap();
                 let output = run.run(input);
                 let _ = sender.send(output);
