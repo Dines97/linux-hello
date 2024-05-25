@@ -1,3 +1,4 @@
+use crate::config::GLOBAL_CONFIG;
 use serde::{Deserialize, Serialize};
 use std::{
     fs::{self, File, OpenOptions},
@@ -5,8 +6,6 @@ use std::{
     path::Path,
     sync::RwLock,
 };
-
-use crate::config::GLOBAL_CONFIG;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub(crate) struct Face {
@@ -23,6 +22,7 @@ pub(crate) struct Identity {
 pub(crate) struct User {
     pub(crate) name: String,
     pub(crate) uid: u32,
+    pub identities: Vec<Identity>,
 }
 
 impl From<nix::unistd::User> for User {
@@ -30,6 +30,7 @@ impl From<nix::unistd::User> for User {
         Self {
             name: value.name,
             uid: value.uid.into(),
+            identities: vec![],
         }
     }
 }
@@ -43,8 +44,7 @@ impl User {
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub(crate) struct Data {
-    // pub(crate) users: Vec<User>,
-    pub(crate) identities: Vec<Identity>,
+    pub users: Vec<User>,
 }
 
 pub(crate) static GLOBAL_DATA: once_cell::sync::OnceCell<RwLock<Data>> = once_cell::sync::OnceCell::new();

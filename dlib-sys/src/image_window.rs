@@ -12,13 +12,15 @@ pub struct ImageWindow {
     pub(crate) inner: cxx::UniquePtr<crate::ffi::wrapper::ImageWindow>,
 }
 
-impl ImageWindow {
-    pub fn new() -> Self {
+impl Default for ImageWindow {
+    fn default() -> Self {
         Self {
             inner: crate::ffi::wrapper::ImageWindow::new().within_unique_ptr(),
         }
     }
+}
 
+impl ImageWindow {
     pub fn set_matrix(&mut self, matrix: &Matrix) {
         self.inner.pin_mut().set_matrix(matrix.inner.as_ref().unwrap())
     }

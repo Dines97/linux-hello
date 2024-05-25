@@ -79,6 +79,14 @@ pub fn extract_image_chip(cv_image: &CvImage, chip_details: &ChipDetails, image_
     )
 }
 
+pub mod ffi_extern {
+
+    use crate::*;
+
+    // Required for dlib
+    pub use ffi::wrapper::OverlayLine;
+}
+
 #[cfg(test)]
 mod tests {
 

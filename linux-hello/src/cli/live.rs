@@ -1,10 +1,7 @@
-use std::time::Duration;
-
-use crate::core::Core;
 use crate::Runnable;
-
 use clap::Args;
 use color_eyre::Result;
+use std::time::Duration;
 
 #[derive(Debug, Args)]
 pub(crate) struct LiveArgs {
@@ -14,7 +11,8 @@ pub(crate) struct LiveArgs {
 
 impl Runnable for LiveArgs {
     fn run(&self) -> Result<()> {
-        let mut core = Core::default();
+        // crate::core::face_recognition::face_recognition(true, self.camera);
+
         // core.run()
 
         std::thread::sleep(Duration::new(60, 0));
