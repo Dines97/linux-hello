@@ -8,11 +8,7 @@ pub(crate) struct AddArgs {}
 
 impl Runnable for AddArgs {
     fn run(&self) -> Result<()> {
-        Core::new(Default::default(), false, OperationMode::Add);
-
-        log::info!("Writing user to database");
-        // let a = GLOBAL_DATA.get().unwrap().write();
-        // a.unwrap().identities.push(identity);
+        Core::new(Default::default(), OperationMode::Add);
 
         Ok(())
     }

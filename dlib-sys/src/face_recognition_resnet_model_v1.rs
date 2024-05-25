@@ -17,10 +17,11 @@ impl FaceRecognitionResnetModelV1 {
     }
 
     // TODO: Add vector support
-    pub fn function_call(&self, matrix: &Matrix) -> MatrixDescriptor {
+    pub fn function_call(&mut self, matrix: &Matrix) -> MatrixDescriptor {
         MatrixDescriptor {
             inner: self
                 .inner
+                .pin_mut()
                 .function_call(matrix.inner.as_ref().unwrap())
                 .within_unique_ptr(),
         }

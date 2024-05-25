@@ -10,18 +10,20 @@ use crate::{
 };
 use crossbeam_channel::unbounded;
 use railwork::{
-    action::ActionBlock, batch::BatchBlock, filter::FilterBlock, produce::ProduceBlock, sync::SyncActionBlock, transform::TransformBlock
+    action::ActionBlock, batch::BatchBlock, filter::FilterBlock, produce::ProduceBlock, sync::SyncActionBlock,
+    transform::TransformBlock,
 };
 
 pub(crate) enum OperationMode {
     Add,
     Login,
+    Display,
 }
 
 pub(crate) struct Core {}
 
 impl Core {
-    pub(crate) fn new(camera_index: Option<i32>, enable_display: bool, operation_mode: OperationMode) -> Self {
+    pub(crate) fn new(camera_index: Option<i32>, operation_mode: OperationMode) -> Self {
         let config = GLOBAL_CONFIG.read().unwrap();
 
         // Camera to face recognition
@@ -40,8 +42,14 @@ impl Core {
         let (sender2, receiver2) = unbounded();
 
         // Perform face recognition
-        let face_recognition_block =
-            TransformBlock::from_transform(FaceRecognition::new(enable_display), receiver1, sender2);
+        let face_recognition_block = TransformBlock::from_transform(
+            FaceRecognition::new(match operation_mode {
+                OperationMode::Display => true,
+                _ => false,
+            }),
+            receiver1,
+            sender2,
+        );
 
         match operation_mode {
             OperationMode::Add => {
@@ -70,6 +78,7 @@ impl Core {
                 let face_add = SyncActionBlock::new(FaceAdd::default(), receiver5);
             }
             OperationMode::Login => todo!(),
+            OperationMode::Display => loop {},
         }
 
         Self {}

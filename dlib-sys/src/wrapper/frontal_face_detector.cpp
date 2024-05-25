@@ -14,13 +14,12 @@
 namespace wrapper {
 
 struct FrontalFaceDetector {
-  const dlib::frontal_face_detector inner;
+  dlib::frontal_face_detector inner;
 
   FrontalFaceDetector() : inner(dlib::get_frontal_face_detector()) {}
 
-  std::vector<Rectangle> function_call(const CvImage &cv_image) const {
-    std::vector<dlib::rectangle> dlib_rectangles =
-        const_cast<dlib::frontal_face_detector &>(inner)(cv_image.inner);
+  std::vector<Rectangle> function_call(const CvImage &cv_image) {
+    std::vector<dlib::rectangle> dlib_rectangles = inner(cv_image.inner);
     std::vector<Rectangle> rectangles;
 
     std::transform(dlib_rectangles.begin(), dlib_rectangles.end(),

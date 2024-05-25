@@ -25,7 +25,7 @@ impl FaceRecognition {
         }
     }
 
-    pub fn get_faces(&self, cv_image: &CvImage) -> Vec<crate::face::Face> {
+    pub fn get_faces(&mut self, cv_image: &CvImage) -> Vec<crate::face::Face> {
         let rectangles: Vec<dlib_sys::rectangle::Rectangle> = self.frontal_face_detector.function_call(cv_image);
 
         let faces: Vec<Face> = rectangles
@@ -36,7 +36,7 @@ impl FaceRecognition {
         faces
     }
 
-    fn generate_face(&self, cv_image: &CvImage, rectangle: Rectangle) -> Face {
+    fn generate_face(&mut self, cv_image: &CvImage, rectangle: Rectangle) -> Face {
         let mut image_chip: Matrix = Matrix::new();
 
         let full_object_detection: FullObjectDetection =

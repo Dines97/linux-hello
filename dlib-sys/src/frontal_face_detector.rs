@@ -18,12 +18,12 @@ impl FrontalFaceDetector {
 
     /// Perform operator() call on c++ side hence this terrible name
     /// NOTE: Find a better name for this method
-    pub fn function_call(&self, cv_image: &CvImage) -> Vec<Rectangle> {
+    pub fn function_call(&mut self, cv_image: &CvImage) -> Vec<Rectangle> {
         // let mut cxx_rectangles: UniquePtr<CxxVector<crate::ffi::wrapper::Rectangle>> =
         //     self.inner.function_call(cv_image.inner.pin_mut());
 
         let rectangles: UniquePtr<CxxVector<crate::ffi::wrapper::Rectangle>> =
-            self.inner.function_call(cv_image.inner.as_ref().unwrap());
+            self.inner.pin_mut(). function_call(cv_image.inner.as_ref().unwrap());
 
         return rectangles
             .as_ref()

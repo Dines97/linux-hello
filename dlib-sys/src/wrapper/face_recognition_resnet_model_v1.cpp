@@ -59,14 +59,14 @@ struct FaceRecognitionResnetModelV1 {
     dlib::deserialize(file_path) >> inner;
   }
 
-  MatrixDescriptor function_call(const Matrix &matrix) const {
+  MatrixDescriptor function_call(const Matrix &matrix) {
 
     std::vector<dlib::matrix<dlib::rgb_pixel>> dlib_matricies = {matrix.inner};
 
     // std::cout << "resnet working?" << std::endl;
 
     std::vector<dlib::matrix<float, 0, 1>> dlib_face_descriptors =
-        const_cast<dlib_ext::anet_type &>(inner)(dlib_matricies);
+        inner(dlib_matricies);
 
     return MatrixDescriptor(dlib_face_descriptors.front());
   }

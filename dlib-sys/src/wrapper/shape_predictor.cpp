@@ -20,9 +20,8 @@ struct ShapePredictor {
   }
 
   FullObjectDetection function_call(const CvImage &cv_image,
-                                    Rectangle rectangle) const {
-    return FullObjectDetection(const_cast<dlib::shape_predictor &>(inner)(
-        cv_image.inner, rectangle.inner));
+                                    Rectangle rectangle) {
+    return FullObjectDetection(inner(cv_image.inner, rectangle.inner));
   }
 
   // std::vector<Rectangle> functionCall(CvImage &cv_image) {
