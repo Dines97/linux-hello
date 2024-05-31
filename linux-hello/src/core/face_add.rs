@@ -1,5 +1,4 @@
-use crate::state::{self, Face, Identity, User, GLOBAL_DATA};
-use core::panic;
+use crate::data::{face::Face, identity::Identity, user::User, GLOBAL_DATA};
 use railwork::action::Action;
 
 #[derive(Default)]
@@ -11,7 +10,7 @@ impl Action for FaceAdd {
     type Input = Vec<dlib_support::face::Face>;
 
     fn run(&mut self, input: Self::Input) {
-        let mut state = GLOBAL_DATA.get().unwrap().write().unwrap();
+        let mut state = GLOBAL_DATA.write().unwrap();
 
         let mut new_user = User::current();
         let target_user = state.users.iter_mut().find(|x| x.name == new_user.name);
@@ -33,5 +32,7 @@ impl Action for FaceAdd {
                 state.users.push(new_user);
             }
         }
+
+        state.serialize();
     }
 }

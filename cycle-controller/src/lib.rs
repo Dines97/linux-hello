@@ -7,13 +7,15 @@ pub struct CycleController {
     instant: Instant,
 }
 
-impl CycleController {
-    pub fn new() -> Self {
+impl Default for CycleController {
+    fn default() -> Self {
         Self {
             instant: Instant::now(),
         }
     }
+}
 
+impl CycleController {
     pub fn update(&mut self) {
         self.instant = Instant::now();
     }

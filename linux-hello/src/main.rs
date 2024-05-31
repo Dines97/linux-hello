@@ -1,8 +1,7 @@
 mod cli;
 mod config;
 mod core;
-mod cycle_controller;
-mod state;
+mod data;
 
 use clap::Parser;
 use cli::Runnable;
@@ -16,14 +15,20 @@ fn main() -> color_eyre::Result<()> {
         .filter_level(log::LevelFilter::Trace)
         .init();
 
-    opencv_sys::set_num_threads(1);
-
-    state::deserialize();
-
-    let cli = cli::Cli::parse();
-    let _ = cli.command.run();
-
-    state::serialize();
+    std::thread::scope(|s| {
+        s.spawn(|| {
+            log::info!("Lazy state loading");
+            drop(crate::data::GLOBAL_DATA.read().unwrap());
+            log::info!("Lazy state loaded");
+        });
+        s.spawn(|| {
+            log::info!("Lazy config loading");
+            drop(crate::config::GLOBAL_CONFIG.read().unwrap());
+            log::info!("Lazy config loaded");
+        });
+        let cli = cli::Cli::parse();
+        let _ = cli.command.run();
+    });
 
     log::info!("Bye");
 

@@ -526,6 +526,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "cycle-controller"
+version = "0.1.0"
+
+[[package]]
 name = "deranged"
 version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1129,6 +1133,7 @@ dependencies = [
  "color-eyre",
  "crossbeam-channel",
  "cxx",
+ "cycle-controller",
  "dlib-support",
  "dlib-sys",
  "env_logger 0.11.3",

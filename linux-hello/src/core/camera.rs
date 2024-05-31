@@ -1,4 +1,5 @@
-use crate::{config::GLOBAL_CONFIG, cycle_controller::CycleController};
+use crate::config::GLOBAL_CONFIG;
+use cycle_controller::CycleController;
 use dlib_sys::cv_image::CvImage;
 use opencv_sys::video_capture::{VideoCapture, VideoCaptureAPIs};
 use railwork::produce::Produce;
@@ -27,7 +28,7 @@ impl Camera {
         let video_capture = VideoCapture::new(camera_index, api_preference);
         log::info!("OpenCV backend name: {}", video_capture.get_backend_name());
 
-        let cycle_controller: CycleController = CycleController::new();
+        let cycle_controller: CycleController = CycleController::default();
 
         Self {
             video_capture,
@@ -40,11 +41,10 @@ impl Produce for Camera {
     type Output = dlib_sys::cv_image::CvImage;
 
     fn run(&mut self) -> Self::Output {
-        log::trace!("Reading camera");
         let mat = self.video_capture.record();
 
         // cycle_controller.throttle(10.0);
-        log::trace!("{}", self.cycle_controller);
+        log::trace!("Camera CPS: {}", self.cycle_controller);
         self.cycle_controller.update();
 
         CvImage::from(mat)

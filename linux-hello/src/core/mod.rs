@@ -26,6 +26,8 @@ impl Core {
     pub(crate) fn new(camera_index: Option<i32>, operation_mode: OperationMode) -> Self {
         let config = GLOBAL_CONFIG.read().unwrap();
 
+        opencv_sys::set_num_threads(1);
+
         // Camera to face recognition
         let (sender1, receiver1) = unbounded();
 

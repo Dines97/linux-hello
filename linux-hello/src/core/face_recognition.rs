@@ -1,4 +1,5 @@
-use crate::{config::GLOBAL_CONFIG, core::display::Display, cycle_controller::CycleController};
+use crate::{config::GLOBAL_CONFIG, core::display::Display};
+use cycle_controller::CycleController;
 use railwork::transform::Transform;
 
 pub(crate) struct FaceRecognition {
@@ -31,7 +32,7 @@ impl FaceRecognition {
             ),
 
             display: enable_display.then(Display::default),
-            cycle_controller: CycleController::new(),
+            cycle_controller: CycleController::default(),
             prev: vec![0_f32; 128],
         }
     }
