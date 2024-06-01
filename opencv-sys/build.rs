@@ -7,7 +7,7 @@ fn main() -> miette::Result<()> {
     libs.append(&mut opencv.libs);
 
     let mut builder = autocxx_build::Builder::new("src/lib.rs", include_paths).build()?;
-    builder.cpp(true).std("c++20").compile("opencv-sys");
+    builder.cpp(true).std("c++17").compile("opencv-sys");
 
     libs.iter()
         .for_each(|x: &String| println!("cargo:rustc-link-lib={}", x));

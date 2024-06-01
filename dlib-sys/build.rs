@@ -39,7 +39,7 @@ fn main() -> miette::Result<()> {
     libs.append(&mut curand.libs);
 
     let mut builder = autocxx_build::Builder::new("src/lib.rs", include_paths).build()?;
-    builder.cpp(true).std("c++20").compile("dlib-sys");
+    builder.cpp(true).std("c++17").compile("dlib-sys");
 
     libs.iter()
         .for_each(|x: &String| println!("cargo:rustc-link-lib={}", x));

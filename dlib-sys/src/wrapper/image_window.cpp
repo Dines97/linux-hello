@@ -40,7 +40,7 @@ struct ImageWindow {
 
   void clear_overlay() { this->inner.clear_overlay(); }
 
-  const bool is_closed() const {
+  bool is_closed() const {
     try {
       return this->inner.is_closed();
     } catch (const std::exception &e) {
