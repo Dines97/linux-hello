@@ -2,7 +2,6 @@ use crate::config::GLOBAL_CONFIG;
 use cycle_controller::CycleController;
 use dlib_sys::cv_image::CvImage;
 use opencv_sys::video_capture::{VideoCapture, VideoCaptureAPIs};
-use railwork::produce::Produce;
 
 pub(crate) struct Camera {
     video_capture: VideoCapture,
@@ -35,12 +34,8 @@ impl Camera {
             cycle_controller,
         }
     }
-}
 
-impl Produce for Camera {
-    type Output = dlib_sys::cv_image::CvImage;
-
-    fn run(&mut self) -> Self::Output {
+    pub(crate) fn run(&mut self) -> CvImage {
         let mat = self.video_capture.record();
 
         // cycle_controller.throttle(10.0);

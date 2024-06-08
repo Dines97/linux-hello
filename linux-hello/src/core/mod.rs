@@ -1,26 +1,30 @@
 pub(crate) mod camera;
 pub(crate) mod display;
 pub(crate) mod face_add;
-pub(crate) mod face_login;
 pub(crate) mod face_recognition;
+pub(crate) mod login;
 
 use crate::{
     config::GLOBAL_CONFIG,
-    core::{camera::Camera, face_add::FaceAdd, face_recognition::FaceRecognition},
+    core::{camera::Camera, face_add::FaceAdd, face_recognition::FaceRecognition, login::Login},
 };
 use crossbeam_channel::unbounded;
-use railwork::{
-    action::ActionBlock, batch::BatchBlock, filter::FilterBlock, produce::ProduceBlock, sync::SyncActionBlock,
-    transform::TransformBlock,
-};
+use railwork::nodes::{produce::ProduceNode, transform::TransformNode};
 
 pub(crate) enum OperationMode {
     Add,
     Login,
-    Display,
+    Live,
 }
 
-pub(crate) struct Core {}
+pub(crate) struct Core {
+    operation_mode: OperationMode,
+
+    _camera_node: ProduceNode,
+    _face_recognition_node: TransformNode,
+
+    receiver: crossbeam_channel::Receiver<Vec<dlib_support::face::Face>>,
+}
 
 impl Core {
     pub(crate) fn new(camera_index: Option<i32>, operation_mode: OperationMode) -> Self {
@@ -32,57 +36,56 @@ impl Core {
         let (sender1, receiver1) = unbounded();
 
         // Read camera
-        let camera_block = ProduceBlock::new(
-            Camera::new(
-                camera_index.unwrap_or(config.video.camera_index),
-                config.video.video_capture_api,
-            ),
-            sender1,
+        let mut camera = Camera::new(
+            camera_index.unwrap_or(config.video.camera_index),
+            config.video.video_capture_api,
         );
+        let _camera_node = ProduceNode::new(move || camera.run(), sender1);
 
         // Face recognition to ?
         let (sender2, receiver2) = unbounded();
 
         // Perform face recognition
-        let face_recognition_block = TransformBlock::from_transform(
-            FaceRecognition::new(match operation_mode {
-                OperationMode::Display => true,
-                _ => false,
-            }),
-            receiver1,
-            sender2,
-        );
+        let mut face_recognition = FaceRecognition::new(matches!(operation_mode, OperationMode::Live));
+        let _face_recognition_node = TransformNode::new(move |x| face_recognition.run(x), receiver1, sender2);
 
-        match operation_mode {
-            OperationMode::Add => {
-                // Filter to filter?
-                let (sender3, receiver3) = unbounded();
+        Self {
+            operation_mode,
+            _camera_node,
+            _face_recognition_node,
+            receiver: receiver2,
+        }
+    }
 
-                // Filter out multi face images
-                let filter_block = TransformBlock::from_closure(
-                    |mut x| match x.len() {
-                        0 => None,
-                        1 => x.pop(),
-                        _ => panic!("Multiple faces detected on one of the images"),
-                    },
-                    receiver2,
-                    sender3,
-                );
+    pub(crate) fn add(&mut self) {
+        let mut batch = vec![];
 
-                // Filter to batch
-                let (sender4, receiver4) = unbounded();
-                let filter = FilterBlock::new(receiver3, sender4);
+        loop {
+            let mut faces = self.receiver.recv().unwrap();
+            match faces.len() {
+                0 => continue,
+                1 => batch.push(faces.pop().unwrap()),
+                _ => panic!("Multiple faces detected on one of the images"),
+            };
 
-                // Batch to add
-                let (sender5, receiver5) = unbounded();
-                let batch_block = BatchBlock::new_sized(128, receiver4, sender5);
-
-                let face_add = SyncActionBlock::new(FaceAdd::default(), receiver5);
+            if batch.len() == 128 {
+                break;
             }
-            OperationMode::Login => todo!(),
-            OperationMode::Display => loop {},
         }
 
-        Self {}
+        let mut face_add = FaceAdd::default();
+        face_add.run(batch)
+    }
+
+    pub(crate) fn login(&mut self) {
+        loop {
+            let live = Login::default();
+            if let Some(x) = live.run(self.receiver.recv().unwrap()) {
+                log::info!("Found user id: {}", x);
+                if let OperationMode::Login = self.operation_mode {
+                    break;
+                }
+            }
+        }
     }
 }

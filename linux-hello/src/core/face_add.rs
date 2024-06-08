@@ -1,15 +1,12 @@
 use crate::data::{face::Face, identity::Identity, user::User, GLOBAL_DATA};
-use railwork::action::Action;
 
 #[derive(Default)]
 pub(crate) struct FaceAdd {}
 
 unsafe impl Send for FaceAdd {}
 
-impl Action for FaceAdd {
-    type Input = Vec<dlib_support::face::Face>;
-
-    fn run(&mut self, input: Self::Input) {
+impl FaceAdd {
+    pub(crate) fn run(&mut self, input: Vec<dlib_support::face::Face>) {
         let mut state = GLOBAL_DATA.write().unwrap();
 
         let mut new_user = User::current();

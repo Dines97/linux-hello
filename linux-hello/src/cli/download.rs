@@ -67,12 +67,12 @@ impl Runnable for DownloadArgs {
     fn run(&self) -> Result<()> {
         let config = GLOBAL_CONFIG.read().unwrap();
 
-        fs::create_dir_all(Path::new(&config.models.models_dir)).expect("Unable to create model directory");
+        fs::create_dir_all(Path::new(&config.models.dir)).expect("Unable to create model directory");
 
-        let path = download_file(&config.models.shape_predictor.url, &config.models.models_dir)?;
+        let path = download_file(&config.models.shape_predictor.url, &config.models.dir)?;
         extract_bz2(path)?;
 
-        let path = download_file(&config.models.face_recognition.url, &config.models.models_dir)?;
+        let path = download_file(&config.models.face_recognition.url, &config.models.dir)?;
         extract_bz2(path)?;
 
         Ok(())

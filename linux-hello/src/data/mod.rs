@@ -8,9 +8,12 @@ use serde::{Deserialize, Serialize};
 use std::{
     fs::{self, File, OpenOptions},
     io::{BufReader, BufWriter},
-    path::Path,
+    path::{Path, PathBuf},
     sync::RwLock,
 };
+
+pub(crate) static DATA_DIR: once_cell::sync::Lazy<PathBuf> =
+    once_cell::sync::Lazy::new(|| PathBuf::from("/var/lib/linux-hello/"));
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub(crate) struct Data {
@@ -21,7 +24,7 @@ impl Data {
     fn desialize() -> Self {
         let config = GLOBAL_CONFIG.read().unwrap();
 
-        let path = Path::new(&config.state_path);
+        let path = Path::new(&config.data_filepath);
         fs::create_dir_all(path.parent().expect("Wrong state path")).expect("Can't create folder for state file");
 
         let data: Data = if path.exists() {
@@ -42,7 +45,7 @@ impl Data {
             .write(true)
             .truncate(true)
             .create(true)
-            .open(&config.state_path)
+            .open(&config.data_filepath)
             .expect("Failed to open output file");
         let writer = BufWriter::new(output_file);
 

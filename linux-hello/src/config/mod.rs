@@ -12,9 +12,8 @@ use serde::{Deserialize, Serialize};
 use std::{env, path::PathBuf, sync::RwLock};
 
 static ENV_PREFIX: &str = "LINUX_HELLO__";
-static ETC_PATH: once_cell::sync::Lazy<PathBuf> = once_cell::sync::Lazy::new(|| PathBuf::from("/etc/linux-hello/"));
-static STATE_PATH: once_cell::sync::Lazy<PathBuf> =
-    once_cell::sync::Lazy::new(|| PathBuf::from("/var/lib/linux-hello/"));
+
+static ETC_DIR: once_cell::sync::Lazy<PathBuf> = once_cell::sync::Lazy::new(|| PathBuf::from("/etc/linux-hello/"));
 
 #[derive(Debug, Deserialize, Serialize)]
 pub(crate) struct Config {
@@ -22,7 +21,7 @@ pub(crate) struct Config {
     pub(crate) models: Models,
 
     #[serde(default)]
-    pub(super) state_path: PathBuf,
+    pub(super) data_filepath: PathBuf,
 
     #[serde(default)]
     pub(crate) video: Video,
@@ -32,7 +31,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             models: Models::default(),
-            state_path: STATE_PATH.join("linux-hello/state.json"),
+            data_filepath: crate::data::DATA_DIR.join("data.json"),
             video: Video::default(),
         }
     }
@@ -40,18 +39,18 @@ impl Default for Config {
 
 impl Config {
     fn new() -> Self {
-        let config_path = match env::var(String::from(ENV_PREFIX) + "CONFIG_PATH") {
+        let config_filepath = match env::var(String::from(ENV_PREFIX) + "CONFIG_FILEPATH") {
             Ok(x) => PathBuf::from(&x),
-            Err(_) => ETC_PATH.join("config.toml"),
+            Err(_) => ETC_DIR.join("config.toml"),
         };
 
-        if !config_path.exists() {
+        if !config_filepath.exists() {
             log::warn!("Config path invalid")
         }
 
         let config: Config = Figment::new()
             .merge(Serialized::defaults(Config::default()))
-            .merge(Toml::file(config_path))
+            .merge(Toml::file(config_filepath))
             .merge(Env::prefixed(ENV_PREFIX).split("__"))
             .extract()
             .expect("Unable to build configuration");
