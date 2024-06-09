@@ -1,4 +1,3 @@
-use crate::config::GLOBAL_CONFIG;
 use cycle_controller::CycleController;
 use dlib_sys::cv_image::CvImage;
 use opencv_sys::video_capture::{VideoCapture, VideoCaptureAPIs};
@@ -12,7 +11,7 @@ unsafe impl Send for Camera {}
 
 impl Default for Camera {
     fn default() -> Self {
-        let config = GLOBAL_CONFIG.read().unwrap();
+        let config = crate::config::read();
 
         Self::new(config.video.camera_index, config.video.video_capture_api)
     }

@@ -13,7 +13,7 @@ use std::{env, path::PathBuf, sync::RwLock};
 
 static ENV_PREFIX: &str = "LINUX_HELLO__";
 
-static ETC_DIR: once_cell::sync::Lazy<PathBuf> = once_cell::sync::Lazy::new(|| PathBuf::from("/etc/linux-hello/"));
+static CONFIG_DIR: once_cell::sync::Lazy<PathBuf> = once_cell::sync::Lazy::new(|| PathBuf::from("/etc/linux-hello/"));
 
 #[derive(Debug, Deserialize, Serialize)]
 pub(crate) struct Config {
@@ -41,7 +41,7 @@ impl Config {
     fn new() -> Self {
         let config_filepath = match env::var(String::from(ENV_PREFIX) + "CONFIG_FILEPATH") {
             Ok(x) => PathBuf::from(&x),
-            Err(_) => ETC_DIR.join("config.toml"),
+            Err(_) => CONFIG_DIR.join("config.toml"),
         };
 
         if !config_filepath.exists() {
@@ -62,5 +62,8 @@ impl Config {
     }
 }
 
-pub(crate) static GLOBAL_CONFIG: once_cell::sync::Lazy<RwLock<Config>> =
-    once_cell::sync::Lazy::new(|| RwLock::new(Config::new()));
+static GLOBAL_CONFIG: once_cell::sync::Lazy<RwLock<Config>> = once_cell::sync::Lazy::new(|| RwLock::new(Config::new()));
+
+pub(crate) fn read<'a>() -> std::sync::RwLockReadGuard<'a, Config> {
+    GLOBAL_CONFIG.read().expect("Failed to read global config")
+}

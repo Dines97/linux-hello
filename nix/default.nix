@@ -35,7 +35,8 @@ inputs.flake-parts.lib.mkFlake {inherit inputs;} {
           shellHook = ''
             export LINUX_HELLO__CONFIG_FILEPATH="./config.toml"
             export LINUX_HELLO__DATA_FILEPATH="$HOME/.local/share/linux-hello/data.json"
-            export LINUX_HELLO__MODELS__DIR="$HOME/.local/state/linux-hello/models/"
+            export LINUX_HELLO__MODELS__FACE_RECOGNITION__FILEPATH="$HOME/.local/state/linux-hello/models/dlib_face_recognition_resnet_model_v1.dat"
+            export LINUX_HELLO__MODELS__SHAPE_PREDICTOR__FILEPATH="$HOME/.local/state/linux-hello/models/shape_predictor_68_face_landmarks_GTX.dat"
           '';
         }))
         .override {

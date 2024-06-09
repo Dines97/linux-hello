@@ -3,7 +3,6 @@ pub(crate) mod identity;
 pub(crate) mod user;
 
 use self::user::User;
-use crate::config::GLOBAL_CONFIG;
 use serde::{Deserialize, Serialize};
 use std::{
     fs::{self, File, OpenOptions},
@@ -22,7 +21,7 @@ pub(crate) struct Data {
 
 impl Data {
     fn desialize() -> Self {
-        let config = GLOBAL_CONFIG.read().unwrap();
+        let config = crate::config::read();
 
         let path = Path::new(&config.data_filepath);
         fs::create_dir_all(path.parent().expect("Wrong state path")).expect("Can't create folder for state file");
@@ -39,7 +38,7 @@ impl Data {
     }
 
     pub(crate) fn serialize(&self) {
-        let config = GLOBAL_CONFIG.read().unwrap();
+        let config = crate::config::read();
 
         let output_file = OpenOptions::new()
             .write(true)

@@ -1,18 +1,18 @@
 use crate::data::user::User;
 
-pub(crate) struct Login<'a> {
-    data: std::sync::RwLockReadGuard<'a, crate::data::Data>,
+pub(crate) struct Login<'lock> {
+    data: std::sync::RwLockReadGuard<'lock, crate::data::Data>,
 }
 
-impl<'a> Default for Login<'a> {
+impl<'lock> Default for Login<'lock> {
     fn default() -> Self {
         Self {
-            data: crate::data::GLOBAL_DATA.read().unwrap(),
+            data: crate::data::GLOBAL_DATA.read().expect("Fail to read config"),
         }
     }
 }
 
-impl<'a> Login<'a> {
+impl<'lock> Login<'lock> {
     pub(crate) fn run(&self, recorded_faces: Vec<dlib_support::face::Face>) -> Option<u32> {
         recorded_faces.iter().find_map(|face| {
             self.data.users.iter().find_map(|user| {

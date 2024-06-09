@@ -11,7 +11,7 @@ pub(crate) struct AddArgs {
 
 impl Runnable for AddArgs {
     fn run(&self) -> Result<()> {
-        let mut core = Core::new(self.camera, OperationMode::Add);
+        let mut core = Core::new(self.camera, OperationMode::Add)?;
         core.add();
 
         Ok(())

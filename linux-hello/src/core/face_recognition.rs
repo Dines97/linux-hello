@@ -1,4 +1,5 @@
-use crate::{config::GLOBAL_CONFIG, core::display::Display};
+use crate::core::display::Display;
+use color_eyre::{eyre::Ok, Result};
 use cycle_controller::CycleController;
 use dlib_sys::cv_image::CvImage;
 
@@ -11,28 +12,27 @@ pub(crate) struct FaceRecognition {
 unsafe impl Send for FaceRecognition {}
 
 impl FaceRecognition {
-    pub(crate) fn new(enable_display: bool) -> Self {
-        let config = GLOBAL_CONFIG.read().unwrap();
+    pub(crate) fn new(enable_display: bool) -> Result<Self> {
+        let config = crate::config::read();
 
-        log::info!("Models dir: {}", config.models.dir.display());
         log::info!(
-            "Shape predictor file path: {}",
-            config.models.shape_predictor.file_name.display()
+            "Shape predictor filepath: {}",
+            config.models.shape_predictor.filepath.display()
         );
         log::info!(
-            "Face recognition file path: {}",
-            config.models.face_recognition.file_name.display()
+            "Face recognition filepath: {}",
+            config.models.face_recognition.filepath.display()
         );
 
-        Self {
+        Ok(Self {
             face_recognition: dlib_support::face_recognition::FaceRecognition::new(
-                config.models.dir.join(&config.models.shape_predictor.file_name),
-                config.models.dir.join(&config.models.face_recognition.file_name),
+                &config.models.shape_predictor.filepath,
+                &config.models.face_recognition.filepath,
             ),
 
             display: enable_display.then(Display::default),
             cycle_controller: CycleController::default(),
-        }
+        })
     }
 
     pub(crate) fn run(&mut self, input: CvImage) -> Vec<dlib_support::face::Face> {

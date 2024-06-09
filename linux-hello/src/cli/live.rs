@@ -13,7 +13,7 @@ pub(crate) struct LiveArgs {
 
 impl Runnable for LiveArgs {
     fn run(&self) -> Result<()> {
-        let mut core = Core::new(self.camera, OperationMode::Live);
+        let mut core = Core::new(self.camera, OperationMode::Live)?;
         core.login();
 
         Ok(())

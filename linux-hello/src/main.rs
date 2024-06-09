@@ -23,7 +23,7 @@ fn main() -> color_eyre::Result<()> {
         });
         s.spawn(|| {
             log::info!("Lazy config loading");
-            drop(crate::config::GLOBAL_CONFIG.read().unwrap());
+            drop(crate::config::read());
             log::info!("Lazy config loaded");
         });
         let cli = cli::Cli::parse();
