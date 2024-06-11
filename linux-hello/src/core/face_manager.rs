@@ -1,18 +1,18 @@
 use crate::data::{face::Face, identity::Identity, user::User};
 
-pub(crate) struct FaceManager<'lock> {
-    data: std::sync::RwLockWriteGuard<'lock, crate::data::Data>,
+pub(crate) struct FaceManager<'a> {
+    data: std::sync::RwLockWriteGuard<'a, crate::data::Data>,
 }
 
-impl<'lock> Default for FaceManager<'lock> {
+impl<'a> Default for FaceManager<'a> {
     fn default() -> Self {
         Self {
-            data: crate::data::GLOBAL_DATA.write().unwrap(),
+            data: crate::data::write(),
         }
     }
 }
 
-impl<'lock> FaceManager<'lock> {
+impl<'a> FaceManager<'a> {
     pub(crate) fn add_identity(&mut self, input: Vec<dlib_support::face::Face>) {
         let mut new_user = User::current();
         let target_user = self.data.users.iter_mut().find(|x| x.name == new_user.name);

@@ -1,33 +1,30 @@
 use crate::nodes::cycle::CycledNode;
 use crossbeam_channel::Sender;
+use cycle_controller::CycleController;
 
 pub struct ProduceNode {
     inner: CycledNode,
 }
 
 impl ProduceNode {
-    pub fn new<F, Output>(mut func: F, sender: Sender<Output>) -> Self
+    pub fn new<F, Output>(mut func: F, sender: Sender<Output>, enable_cycle_controller: bool) -> Self
     where
         F: FnMut() -> Output + Send + 'static,
         Output: Send + 'static,
     {
+        let mut cycle_controller = enable_cycle_controller.then(CycleController::default);
+
         let inner = CycledNode::new(move |x| {
             let output = func();
+            if let Some(x) = cycle_controller.as_mut() {
+                log::trace!("{}", x);
+                x.update();
+            }
             if let Err(e) = sender.send(output) {
                 log::error!("Unable to send: {}", e);
                 *x.lock().unwrap() = false;
             };
         });
-
-        // let inner = crate::nodes::thread::ThreadNode::new(move || {
-        //     while *continue_flag_clone.lock().unwrap() {
-        //         let output = func();
-        //         if let Err(e) = sender.send(output) {
-        //             log::error!("Unable to send: {}", e);
-        //             *continue_flag_clone.lock().unwrap() = false;
-        //         };
-        //     }
-        // });
 
         Self { inner }
     }
@@ -54,7 +51,7 @@ mod tests {
 
         let (tx, rx) = crossbeam_channel::unbounded();
 
-        let _block = ProduceNode::new(move || a.run(), tx);
+        let _block = ProduceNode::new(move || a.run(), tx, false);
         // rx.recv().unwrap();
 
         assert_eq!(rx.recv().unwrap(), 4);

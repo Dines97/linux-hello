@@ -1,5 +1,4 @@
 use super::Runnable;
-use crate::data::GLOBAL_DATA;
 use clap::Args;
 use color_eyre::Result;
 use comfy_table::Table;
@@ -9,7 +8,7 @@ pub(crate) struct ListArgs {}
 
 impl Runnable for ListArgs {
     fn run(&self) -> Result<()> {
-        let data = GLOBAL_DATA.read().unwrap();
+        let data = crate::data::read();
 
         let mut table = Table::new();
         table.load_preset(comfy_table::presets::NOTHING);

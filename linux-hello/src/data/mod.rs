@@ -52,5 +52,12 @@ impl Data {
     }
 }
 
-pub(crate) static GLOBAL_DATA: once_cell::sync::Lazy<RwLock<Data>> =
-    once_cell::sync::Lazy::new(|| RwLock::new(Data::desialize()));
+static GLOBAL_DATA: once_cell::sync::Lazy<RwLock<Data>> = once_cell::sync::Lazy::new(|| RwLock::new(Data::desialize()));
+
+pub(crate) fn read<'a>() -> std::sync::RwLockReadGuard<'a, Data> {
+    GLOBAL_DATA.read().expect("Failed to read global data")
+}
+
+pub(crate) fn write<'a>() -> std::sync::RwLockWriteGuard<'a, Data> {
+    GLOBAL_DATA.write().expect("Failed to write global data")
+}

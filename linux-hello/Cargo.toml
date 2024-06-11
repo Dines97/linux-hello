@@ -27,7 +27,6 @@ nix = { version = "0.28.0", features = ["user"] }
 crossbeam-channel = "0.5.12"
 cxx = "1.0.122"
 # tokio = { version = "1.37.0" }
-cycle-controller = {path = "../cycle-controller/"}
 comfy-table = "7.1.1"
 
 [build-dependencies]

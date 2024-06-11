@@ -18,7 +18,7 @@ fn main() -> color_eyre::Result<()> {
     std::thread::scope(|s| {
         s.spawn(|| {
             log::info!("Lazy state loading");
-            drop(crate::data::GLOBAL_DATA.read().unwrap());
+            drop(crate::data::read());
             log::info!("Lazy state loaded");
         });
         s.spawn(|| {

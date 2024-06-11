@@ -1,5 +1,6 @@
 use crate::nodes::cycle::CycledNode;
 use crossbeam_channel::{Receiver, Sender, TryRecvError};
+use cycle_controller::CycleController;
 use std::time::Duration;
 
 pub struct TransformNode {
@@ -7,15 +8,26 @@ pub struct TransformNode {
 }
 
 impl TransformNode {
-    pub fn new<F, Input, Output>(mut func: F, receiver: Receiver<Input>, sender: Sender<Output>) -> Self
+    pub fn new<F, Input, Output>(
+        mut func: F,
+        receiver: Receiver<Input>,
+        sender: Sender<Output>,
+        enable_cycle_controller: bool,
+    ) -> Self
     where
         F: FnMut(Input) -> Output + Send + 'static,
         Input: Send + 'static,
         Output: Send + 'static,
     {
+        let mut cycle_controller = enable_cycle_controller.then(CycleController::default);
+
         let inner = CycledNode::new(move |x| match receiver.try_recv() {
             Ok(input) => {
                 let output = func(input);
+                if let Some(x) = cycle_controller.as_mut() {
+                    log::trace!("{}", x);
+                    x.update();
+                }
                 if let Err(e) = sender.send(output) {
                     log::error!("Unable to send: {}", e);
                     *x.lock().unwrap() = false;
@@ -60,7 +72,7 @@ mod tests {
         let _ = tx1.send(4);
         let _ = tx1.send(8);
 
-        let _block = TransformNode::new(move |x| a.run(x), rx1, tx2);
+        let _block = TransformNode::new(move |x| a.run(x), rx1, tx2, false);
 
         assert_eq!(rx2.recv().unwrap(), 4);
         assert_eq!(rx2.recv().unwrap(), 8);

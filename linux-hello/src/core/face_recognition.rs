@@ -1,12 +1,10 @@
 use crate::core::display::Display;
 use color_eyre::{eyre::Ok, Result};
-use cycle_controller::CycleController;
 use dlib_sys::cv_image::CvImage;
 
 pub(crate) struct FaceRecognition {
     face_recognition: dlib_support::face_recognition::FaceRecognition,
     display: Option<Display>,
-    cycle_controller: CycleController,
 }
 
 unsafe impl Send for FaceRecognition {}
@@ -31,7 +29,6 @@ impl FaceRecognition {
             ),
 
             display: enable_display.then(Display::default),
-            cycle_controller: CycleController::default(),
         })
     }
 
@@ -42,9 +39,6 @@ impl FaceRecognition {
             x.clear();
             x.display(&input);
         }
-
-        log::trace!("Face recognition {}", &self.cycle_controller);
-        self.cycle_controller.update();
 
         faces.iter().for_each(|face| {
             let overlays = face.full_object_detection.render_face_detections();

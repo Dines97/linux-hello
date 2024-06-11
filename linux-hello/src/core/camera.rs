@@ -1,10 +1,8 @@
-use cycle_controller::CycleController;
 use dlib_sys::cv_image::CvImage;
 use opencv_sys::video_capture::{VideoCapture, VideoCaptureAPIs};
 
 pub(crate) struct Camera {
     video_capture: VideoCapture,
-    cycle_controller: CycleController,
 }
 
 unsafe impl Send for Camera {}
@@ -26,20 +24,11 @@ impl Camera {
         let video_capture = VideoCapture::new(camera_index, api_preference);
         log::info!("OpenCV backend name: {}", video_capture.get_backend_name());
 
-        let cycle_controller: CycleController = CycleController::default();
-
-        Self {
-            video_capture,
-            cycle_controller,
-        }
+        Self { video_capture }
     }
 
     pub(crate) fn run(&mut self) -> CvImage {
         let mat = self.video_capture.record();
-
-        // cycle_controller.throttle(10.0);
-        log::trace!("Camera CPS: {}", self.cycle_controller);
-        self.cycle_controller.update();
 
         CvImage::from(mat)
     }

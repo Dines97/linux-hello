@@ -19,7 +19,7 @@ impl CycledNode {
 
         let inner = ThreadNode::new(move || {
             while *continue_flag_clone.lock().unwrap() {
-                func(&mut continue_flag_clone)
+                func(&mut continue_flag_clone);
             }
         });
 

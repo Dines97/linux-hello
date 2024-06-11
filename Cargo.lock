@@ -1168,7 +1168,6 @@ dependencies = [
  "comfy-table",
  "crossbeam-channel",
  "cxx",
- "cycle-controller",
  "dlib-support",
  "dlib-sys",
  "env_logger 0.11.3",
@@ -1599,6 +1598,7 @@ name = "railwork"
 version = "0.1.0"
 dependencies = [
  "crossbeam-channel",
+ "cycle-controller",
  "log",
 ]
 

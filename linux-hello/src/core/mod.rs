@@ -38,14 +38,14 @@ impl Core {
             camera_index.unwrap_or(config.video.camera_index),
             config.video.video_capture_api,
         );
-        let _camera_node = ProduceNode::new(move || camera.run(), sender1);
+        let _camera_node = ProduceNode::new(move || camera.run(), sender1, true);
 
         // Face recognition to ?
         let (sender2, receiver2) = unbounded();
 
         // Perform face recognition
         let mut face_recognition = FaceRecognition::new(matches!(operation_mode, OperationMode::Live))?;
-        let _face_recognition_node = TransformNode::new(move |x| face_recognition.run(x), receiver1, sender2);
+        let _face_recognition_node = TransformNode::new(move |x| face_recognition.run(x), receiver1, sender2, true);
 
         Ok(Self {
             operation_mode,
