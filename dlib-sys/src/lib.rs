@@ -72,11 +72,7 @@ pub fn get_face_chip_details(
 }
 
 pub fn extract_image_chip(cv_image: &CvImage, chip_details: &ChipDetails, image_chip: &mut Matrix) {
-    crate::ffi::wrapper::extract_image_chip(
-        cv_image.inner.as_ref().unwrap(),
-        &chip_details.inner,
-        image_chip.inner.pin_mut(),
-    )
+    crate::ffi::wrapper::extract_image_chip(&cv_image.inner.as_ref(), &chip_details.inner, image_chip.inner.as_mut())
 }
 
 pub mod ffi_extern {

@@ -1,18 +1,16 @@
-use std::path::Path;
-
+use crate::{cv_image::CvImage, ffi, full_object_detection::FullObjectDetection, rectangle::Rectangle};
 use autocxx::prelude::*;
 use cxx::{let_cxx_string, CxxVector};
-
-use crate::{cv_image::CvImage, ffi, full_object_detection::FullObjectDetection, rectangle::Rectangle};
+use std::{path::Path, pin::Pin};
 
 pub struct ShapePredictor {
-    pub(crate) inner: cxx::UniquePtr<crate::ffi::wrapper::ShapePredictor>,
+    pub(crate) inner: Pin<Box<crate::ffi::wrapper::ShapePredictor>>,
 }
 
 impl ShapePredictor {
     pub fn new<T: ffi::ToCppString>(file_path: T) -> Self {
         Self {
-            inner: crate::ffi::wrapper::ShapePredictor::new(file_path).within_unique_ptr(),
+            inner: crate::ffi::wrapper::ShapePredictor::new(file_path).within_box(),
         }
     }
 
@@ -22,8 +20,8 @@ impl ShapePredictor {
         FullObjectDetection {
             inner: self
                 .inner
-                .pin_mut()
-                .function_call(cv_image.inner.as_ref().unwrap(), rectangle.inner)
+                .as_mut()
+                .function_call(&cv_image.inner.as_ref(), rectangle.inner)
                 .within_unique_ptr(),
         }
     }

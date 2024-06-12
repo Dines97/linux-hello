@@ -1,7 +1,7 @@
+use crate::{ffi::wrapper::stream_extraction, mat::Mat};
 use autocxx::prelude::*;
 use serde::{Deserialize, Serialize};
-
-use crate::{ffi::wrapper::stream_extraction, mat::Mat};
+use std::pin::Pin;
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize)]
 pub enum VideoCaptureAPIs {
@@ -21,18 +21,18 @@ impl std::fmt::Display for VideoCaptureAPIs {
 // }
 
 pub struct VideoCapture {
-    inner: cxx::UniquePtr<crate::ffi::cv::VideoCapture>,
+    inner: Pin<Box<crate::ffi::cv::VideoCapture>>,
 }
 
 impl VideoCapture {
     pub fn new(index: i32, api_preference: VideoCaptureAPIs) -> Self {
         Self {
-            inner: crate::ffi::cv::VideoCapture::new3(c_int(index), c_int(api_preference as i32)).within_unique_ptr(),
+            inner: crate::ffi::cv::VideoCapture::new3(c_int(index), c_int(api_preference as i32)).within_box(),
         }
     }
 
     pub fn stream_extraction(&mut self, mat: &mut Mat) {
-        crate::ffi::wrapper::stream_extraction(self.inner.pin_mut(), mat.inner.pin_mut());
+        crate::ffi::wrapper::stream_extraction(self.inner.as_mut(), mat.inner.as_mut());
     }
 
     pub fn record(&mut self) -> Mat {

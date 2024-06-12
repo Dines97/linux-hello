@@ -1,18 +1,16 @@
-use std::pin::Pin;
-
+use crate::{cv_image::CvImage, matrix::Matrix, rectangle::Rectangle};
 use autocxx::prelude::*;
 use cxx::CxxVector;
-
-use crate::{cv_image::CvImage, matrix::Matrix, rectangle::Rectangle};
+use std::pin::Pin;
 
 pub struct FrontalFaceDetector {
-    pub(crate) inner: cxx::UniquePtr<crate::ffi::wrapper::FrontalFaceDetector>,
+    pub(crate) inner: Pin<Box<crate::ffi::wrapper::FrontalFaceDetector>>,
 }
 
 impl FrontalFaceDetector {
     pub fn new() -> Self {
         Self {
-            inner: crate::ffi::wrapper::FrontalFaceDetector::new().within_unique_ptr(),
+            inner: crate::ffi::wrapper::FrontalFaceDetector::new().within_box(),
         }
     }
 
@@ -23,7 +21,7 @@ impl FrontalFaceDetector {
         //     self.inner.function_call(cv_image.inner.pin_mut());
 
         let rectangles: UniquePtr<CxxVector<crate::ffi::wrapper::Rectangle>> =
-            self.inner.pin_mut(). function_call(cv_image.inner.as_ref().unwrap());
+            self.inner.as_mut().function_call(&cv_image.inner.as_ref());
 
         return rectangles
             .as_ref()

@@ -1,7 +1,6 @@
+use crate::mat::Mat;
 use autocxx::prelude::*;
 use cxx::let_cxx_string;
-
-use crate::mat::Mat;
 
 pub enum WindowFlags {
     WindowAutosize = crate::ffi::cv::WindowFlags::WINDOW_AUTOSIZE as isize,
@@ -14,7 +13,7 @@ pub fn named_window(winname: &str) {
 
 pub fn imshow(winname: &str, mat: &mut Mat) {
     let_cxx_string!(_winname = winname);
-    crate::ffi::wrapper::imshow(&_winname, mat.inner.pin_mut());
+    crate::ffi::wrapper::imshow(&_winname, mat.inner.as_mut());
 }
 
 pub fn wait_key(delay: i32) {

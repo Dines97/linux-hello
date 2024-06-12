@@ -28,6 +28,7 @@ crossbeam-channel = "0.5.12"
 cxx = "1.0.122"
 # tokio = { version = "1.37.0" }
 comfy-table = "7.1.1"
+tikv-jemallocator = "0.5.4"
 
 [build-dependencies]
 shadow-rs = "0.27.1"

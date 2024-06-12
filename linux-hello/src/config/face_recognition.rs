@@ -9,7 +9,6 @@ pub(crate) struct FaceRecognition {
 
 impl Default for FaceRecognition {
     fn default() -> Self {
-
         Self {
             filepath: crate::data::DATA_DIR.join("models/dlib_face_recognition_resnet_model_v1.dat"),
             url: String::from(
