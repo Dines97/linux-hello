@@ -19,20 +19,8 @@ fn main() -> color_eyre::Result<()> {
         .filter_level(log::LevelFilter::Trace)
         .init();
 
-    std::thread::scope(|s| {
-        s.spawn(|| {
-            log::info!("Lazy state loading");
-            drop(crate::data::read());
-            log::info!("Lazy state loaded");
-        });
-        s.spawn(|| {
-            log::info!("Lazy config loading");
-            drop(crate::config::read());
-            log::info!("Lazy config loaded");
-        });
-        let cli = cli::Cli::parse();
-        let _ = cli.command.run();
-    });
+    let cli = cli::Cli::parse();
+    let _ = cli.command.run();
 
     log::info!("Bye");
 

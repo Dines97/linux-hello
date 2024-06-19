@@ -13,3 +13,5 @@ impl Matrix {
         }
     }
 }
+
+unsafe impl Send for Matrix {}

@@ -26,3 +26,5 @@ impl ShapePredictor {
         }
     }
 }
+
+unsafe impl Send for ShapePredictor {}

@@ -37,3 +37,5 @@ impl Default for FrontalFaceDetector {
         Self::new()
     }
 }
+
+unsafe impl Send for FrontalFaceDetector {}

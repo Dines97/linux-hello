@@ -9,3 +9,5 @@ impl FullObjectDetection {
         crate::ffi::wrapper::render_face_detections(self.inner.as_ref().unwrap())
     }
 }
+
+unsafe impl Send for FullObjectDetection {}

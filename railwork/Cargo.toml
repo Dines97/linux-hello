@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 crossbeam-channel = "0.5.12"
 log = "0.4.21"
-cycle-controller = {path = "../cycle-controller/"}
+thiserror = "1.0.61"

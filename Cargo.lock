@@ -560,10 +560,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cycle-controller"
-version = "0.1.0"
-
-[[package]]
 name = "deranged"
 version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -576,7 +572,9 @@ dependencies = [
 name = "dlib-support"
 version = "0.1.0"
 dependencies = [
+ "crossbeam-channel",
  "dlib-sys",
+ "railwork",
 ]
 
 [[package]]
@@ -1599,8 +1597,8 @@ name = "railwork"
 version = "0.1.0"
 dependencies = [
  "crossbeam-channel",
- "cycle-controller",
  "log",
+ "thiserror",
 ]
 
 [[package]]

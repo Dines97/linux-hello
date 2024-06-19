@@ -1,17 +1,15 @@
-use std::path::Path;
-
+use crate::face::Face;
 use dlib_sys::{
     cv_image::CvImage, face_recognition_resnet_model_v1::FaceRecognitionResnetModelV1,
     frontal_face_detector::FrontalFaceDetector, full_object_detection::FullObjectDetection, matrix::Matrix,
     matrix_descriptor::MatrixDescriptor, rectangle::Rectangle, shape_predictor::ShapePredictor,
 };
-
-use crate::face::Face;
+use std::path::Path;
 
 pub struct FaceRecognition {
     frontal_face_detector: FrontalFaceDetector,
     shape_predictor: ShapePredictor,
-    face_recogntion_resnet_model_v1: FaceRecognitionResnetModelV1,
+    face_recognition_resnet_model_v1: FaceRecognitionResnetModelV1,
 }
 
 impl FaceRecognition {
@@ -19,7 +17,7 @@ impl FaceRecognition {
         Self {
             frontal_face_detector: FrontalFaceDetector::new(),
             shape_predictor: ShapePredictor::new(shape_predictor_file_path.as_ref().to_str().unwrap()),
-            face_recogntion_resnet_model_v1: FaceRecognitionResnetModelV1::new(
+            face_recognition_resnet_model_v1: FaceRecognitionResnetModelV1::new(
                 face_recognition_file_path.as_ref().to_str().unwrap(),
             ),
         }
@@ -47,7 +45,7 @@ impl FaceRecognition {
             &mut image_chip,
         );
 
-        let matrix_descriptor: MatrixDescriptor = self.face_recogntion_resnet_model_v1.function_call(&image_chip);
+        let matrix_descriptor: MatrixDescriptor = self.face_recognition_resnet_model_v1.function_call(&image_chip);
 
         Face {
             rectangle: rectangle.clone(),

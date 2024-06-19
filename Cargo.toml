@@ -1,5 +1,5 @@
 [workspace]
-members = ["cycle-controller", "dlib-support", "dlib-sys", "linux-hello", "opencv-sys", "railwork"]
+members = ["dlib-support", "dlib-sys", "linux-hello", "opencv-sys", "railwork"]
 resolver = "2"
 
 # [profile.release]

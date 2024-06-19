@@ -21,3 +21,5 @@ impl FaceRecognitionResnetModelV1 {
         }
     }
 }
+
+unsafe impl Send for FaceRecognitionResnetModelV1 {}

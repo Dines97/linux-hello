@@ -29,3 +29,5 @@ impl core::fmt::Debug for MatrixDescriptor {
             .finish()
     }
 }
+
+unsafe impl Send for MatrixDescriptor {}

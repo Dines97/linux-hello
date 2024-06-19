@@ -45,3 +45,5 @@ impl ImageWindow {
         self.inner.is_closed()
     }
 }
+
+unsafe impl Send for ImageWindow {}
