@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 dlib-sys = {path = "../dlib-sys/"}
 railwork = {path = "../railwork/"}
-crossbeam-channel = "0.5.12"
+crossbeam-channel = "0.5.13"
