@@ -7,5 +7,5 @@
 
   description = "Default flake";
 
-  outputs = inputs @ {...}: import ./nix inputs;
+  outputs = inputs: import ./nix inputs;
 }
