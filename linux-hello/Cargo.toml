@@ -15,7 +15,7 @@ dlib-sys = {path = "../dlib-sys/"}
 dlib-support = {path = "../dlib-support/"}
 railwork = {path = "../railwork/"}
 clap = { version = "4.5.11", features = ["derive"] }
-ambassador = "0.3.6"
+ambassador = "0.4.1"
 shadow-rs = "0.30.0"
 color-eyre = "0.6.3"
 serde = { version = "1.0.204", features = ["derive"] }
