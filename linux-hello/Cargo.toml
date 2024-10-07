@@ -21,7 +21,7 @@ color-eyre = "0.6.3"
 serde = { version = "1.0.204", features = ["derive"] }
 serde_json = "1.0.120"
 reqwest = { version = "0.12.5", features = ["blocking"] }
-once_cell = "1.19.0"
+once_cell = "1.20.2"
 figment = { version = "0.10.19", features = ["toml", "env"] }
 nix = { version = "0.29.0", features = ["user"] }
 crossbeam-channel = "0.5.13"
