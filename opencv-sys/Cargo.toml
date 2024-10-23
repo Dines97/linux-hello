@@ -11,7 +11,7 @@ links = "opencv4"
 [dependencies]
 cxx = "1.0.124"
 autocxx = "0.27.0"
-serde = "1.0.204"
+serde = "1.0.213"
 
 [build-dependencies]
 pkg-config = "0.3.30"
