@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 crossbeam-channel = "0.5.13"
 log = "0.4.22"
-thiserror = "1.0.63"
+thiserror = "1.0.65"
