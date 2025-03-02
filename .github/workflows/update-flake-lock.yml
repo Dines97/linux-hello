@@ -24,7 +24,7 @@ jobs:
         uses: DeterminateSystems/flake-checker-action@main
 
       - name: Update flake.lock
-        uses: DeterminateSystems/update-flake-lock@v23
+        uses: DeterminateSystems/update-flake-lock@v24
         with:
           commit-msg: "build(deps): update flake.lock"
           pr-title: "build(deps): update flake.lock"
