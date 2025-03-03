@@ -156,9 +156,9 @@ dependencies = [
 
 [[package]]
 name = "autocxx-bindgen"
-version = "0.71.1"
+version = "0.73.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7d41cf081e31a74378456586b47a5bae2b75a98e5f7c248c9d9bf433e3637f4"
+checksum = "ecaaf84d9cf1a772409c0abdac7d2477a31fd890dbdf606d8f684dc60129aa94"
 dependencies = [
  "bitflags",
  "cexpr",
@@ -175,9 +175,9 @@ dependencies = [
 
 [[package]]
 name = "autocxx-build"
-version = "0.27.1"
+version = "0.30.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d123397e75f904758fef490775a00b0ada545ab409cb0163d919799e5a30119b"
+checksum = "b16fa879472d80dc40ca826a59347772b3f15e69a7a74df41c4935942f62cf30"
 dependencies = [
  "autocxx-engine",
  "env_logger 0.9.3",
@@ -187,13 +187,13 @@ dependencies = [
 
 [[package]]
 name = "autocxx-engine"
-version = "0.27.1"
+version = "0.30.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d8f30534af0f55d56743806ea9d49fbd85559f2bd3ec074fb3268ad1827fa92"
+checksum = "9866b109f7091a3470a49906d35c7f34597828be8885508e9395d1194f8283ca"
 dependencies = [
  "aquamarine",
  "autocxx-bindgen",
- "autocxx-parser",
+ "autocxx-parser 0.30.0",
  "cc",
  "cxx-gen",
  "indexmap 1.9.3",
@@ -206,6 +206,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "regex",
+ "regex_static",
  "rustversion",
  "serde_json",
  "syn 2.0.99",
@@ -220,7 +221,7 @@ version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0a3c6868514727e4da46049b79941d989606e9eb054fb1915f02cad10a356b37"
 dependencies = [
- "autocxx-parser",
+ "autocxx-parser 0.27.1",
  "proc-macro-error",
  "proc-macro2",
  "quote",
@@ -232,6 +233,24 @@ name = "autocxx-parser"
 version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0cbe64c4c35a76ef3229505d336b3eef29e95b28f457b75e0f84b456a8107af9"
+dependencies = [
+ "indexmap 1.9.3",
+ "itertools 0.10.5",
+ "log",
+ "once_cell",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_json",
+ "syn 2.0.99",
+ "thiserror",
+]
+
+[[package]]
+name = "autocxx-parser"
+version = "0.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6bcfc473ec409e612fb0e0c5c4a1b5b7611eca2bac71bc27b3cda98f15a25124"
 dependencies = [
  "indexmap 1.9.3",
  "itertools 0.10.5",
@@ -1790,7 +1809,7 @@ dependencies = [
  "aho-corasick",
  "memchr",
  "regex-automata",
- "regex-syntax",
+ "regex-syntax 0.8.5",
 ]
 
 [[package]]
@@ -1801,14 +1820,54 @@ checksum = "809e8dc61f6de73b46c85f4c96486310fe304c434cfa43669d7b40f711150908"
 dependencies = [
  "aho-corasick",
  "memchr",
- "regex-syntax",
+ "regex-syntax 0.8.5",
 ]
+
+[[package]]
+name = "regex-syntax"
+version = "0.6.29"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f162c6dd7b008981e4d40210aca20b4bd0f9b60ca9271061b07f78537722f2e1"
 
 [[package]]
 name = "regex-syntax"
 version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
+
+[[package]]
+name = "regex_static"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6126d61c5e4b41929098f73b42fc1d257116cc95d19739248c51591f77cc0021"
+dependencies = [
+ "once_cell",
+ "regex",
+ "regex_static_macro",
+]
+
+[[package]]
+name = "regex_static_impl"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c3755019886a70e772e6360b0b58501d75cf7dc17a53e08aa97e59ecb2c2bc5"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "regex-syntax 0.6.29",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "regex_static_macro"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "79b15495fd034158635bc8b762a132dfc83864d6992aeda1ffabf01b03b611a1"
+dependencies = [
+ "proc-macro2",
+ "regex_static_impl",
+ "syn 1.0.109",
+]
 
 [[package]]
 name = "reqwest"
