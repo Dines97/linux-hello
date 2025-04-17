@@ -9,7 +9,6 @@
   lapack,
   xorg,
   openssl,
-  jemalloc,
 }:
 rustPlatform.buildRustPackage {
   pname = "linux-hello";
@@ -23,14 +22,10 @@ rustPlatform.buildRustPackage {
     rustPlatform.bindgenHook
 
     pkg-config
-
-    jemalloc
   ];
 
   buildInputs = [
     cxx-rs
-
-    jemalloc
 
     (opencv.override {
       enableGtk3 = true;
@@ -64,3 +59,4 @@ rustPlatform.buildRustPackage {
   meta = {
   };
 }
+

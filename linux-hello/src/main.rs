@@ -6,10 +6,6 @@ mod data;
 use clap::Parser;
 use cli::Runnable;
 use env_logger::{Builder, Target};
-use tikv_jemallocator::Jemalloc;
-
-#[global_allocator]
-static GLOBAL: Jemalloc = Jemalloc;
 
 fn main() -> color_eyre::Result<()> {
     color_eyre::install()?;
@@ -26,3 +22,4 @@ fn main() -> color_eyre::Result<()> {
 
     Ok(())
 }
+
